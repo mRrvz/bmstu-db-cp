@@ -30,6 +30,7 @@ class Connection():
             self.connection.close()
             self.connection = None
 
+
 class Formatter():
     @staticmethod
     def get_update_args(args):

@@ -55,7 +55,7 @@ class DisciplineScope():
         self.total_hours = total_h
         self.lectures_hours = lectures_h
         self.seminars_hours = seminars_h
-        self.laboratory_hour = laboratory_h
+        self.laboratory_hours = laboratory_h
         self.independent_hours = independent_h
         self.certification_type = certification_type
 
@@ -71,7 +71,7 @@ class DisciplineModule():
         self.id = id
         self.discipline_id = discipline_id
         self.name = name
-        self.sem_number = sem_n
+        self.semester_number = sem_n
         self.lectures_hours = lectures_h
         self.classroom_hours = classroom_h
         self.seminars_hours = seminars_h
