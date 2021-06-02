@@ -1,5 +1,6 @@
+""" Database models """
+
 import json
-from abc import ABC, abstractmethod
 
 class DisciplineWorkProgram():
     def __init__(
@@ -16,6 +17,9 @@ class DisciplineWorkProgram():
         self.discipline_module = module
         self.discipline_material = material
 
+    def to_json(self):
+        return json.dumps(self.__dict__)
+
 
 class LearningOutcomes():
     def __init__(self, id, discipline_id, competency, formulation, results, methods):
@@ -26,11 +30,17 @@ class LearningOutcomes():
         self.results = results
         self.forms_and_methods = methods
 
+    def to_json(self):
+        return json.dumps(self.__dict__)
+
 
 class EducationalProgram():
     def __init__(self, id, name):
         self.id = id
         self.name = name
+
+    def to_json(self):
+        return json.dumps(self.__dict__)
 
 
 class DisciplineScope():
@@ -48,6 +58,9 @@ class DisciplineScope():
         self.laboratory_hour = laboratory_h
         self.independent_hours = independent_h
         self.certification_type = certification_type
+
+    def to_json(self):
+        return json.dumps(self.__dict__)
 
 
 class DisciplineModule():
@@ -68,9 +81,15 @@ class DisciplineModule():
         self.max_score = max_score
         self.competency_code = competency_code
 
+    def to_json(self):
+        return json.dumps(self.__dict__)
+
 
 class DisciplineMaterial():
     def __init__(self, id, discipline_id, material):
         self.id = id
         self.discipline_id = discipline_id
         self.material = material
+
+    def to_json(self):
+        return json.dumps(self.__dict__)

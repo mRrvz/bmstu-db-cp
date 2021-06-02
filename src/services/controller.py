@@ -1,3 +1,5 @@
+""" Just a controller """
+
 import os
 
 import db.repository as repo
@@ -8,12 +10,12 @@ class Controller():
         self.connection = Connection(
             os.getenv("POSTGRES_DB"),
             os.getenv("POSTGRES_USER"),
-            os.getenv("POSTGRESS_PASSWORD"),
+            os.getenv("POSTGRES_PASSWORD"),
             os.getenv("POSTGRES_HOST")
         )
 
         self.discipline_work_program_repo = repo.DisciplineWorkProgramRepo(self.connection.get())
-        self.learning_outcomes_repo = repo.DisciplineOutcomesRepo(self.connection.get())
+        self.learning_outcomes_repo = repo.LearningOutcomesRepo(self.connection.get())
         self.educational_program_repo = repo.EducationalProgramRepo(self.connection.get())
         self.discipline_scope_repo = repo.DisciplineScopeRepo(self.connection.get())
         self.discipline_module_repo = repo.DisciplineModuleRepo(self.connection.get())

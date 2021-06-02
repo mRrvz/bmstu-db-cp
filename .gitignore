@@ -139,3 +139,7 @@ cfg/
 
 # .DS_Store
 .DS_Store
+
+# Logs
+logs.txt
+
