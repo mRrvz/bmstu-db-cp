@@ -6,7 +6,7 @@ services:
         context: .
         dockerfile: Dockerfile.app
       container_name: rpd-app
-      command: python3 app.py
+      command: python3.8 app.py
       env_file:
         - .env
       volumes:

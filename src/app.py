@@ -11,6 +11,7 @@ import db.repository as repo
 import db.models as m
 from services.controller import Controller
 from services.handler import RequestHandler
+from services.document_parser import DocumentParser
 
 app = Flask(__name__)
 
@@ -18,15 +19,29 @@ app = Flask(__name__)
 time.sleep(1)
 controller = Controller()
 
-
 @app.route("/")
 def get_index():
     return "Index Page"
 
 
-@app.route("/all_dpw", methods=["GET"])
+@app.route("/dpw/<filename>", methods=["POST"])
+def upload_from_file(filename=None):
+    logging.info(f"/dpw/{filename} router called")
+    repo = controller.discipline_work_program_repo
+
+    try:
+        parser = DocumentParser(filename)
+
+    except Exception as err:
+        logging.error(err)
+        return RequestHandler.error_response(500, err)
+
+    return RequestHandler.success_response(data=model)
+
+
+@app.route("/dpw/all", methods=["GET"])
 def get_all_dpw():
-    logging.info("/all_dpw router called")
+    logging.info("/dpw/all router called")
     repo = controller.discipline_work_program_repo
 
     try:
