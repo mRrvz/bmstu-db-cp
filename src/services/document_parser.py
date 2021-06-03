@@ -13,10 +13,28 @@ class DocumentParser():
         self.filename = filename
         self.document = docx.Document(self.filename)
 
-    def discipline_base_info(self):
+    def discipline_base(self):
         iterator = BaseInfoIterator(self.document)
         fields = [None] + [field for field in iterator]
         return models.DisciplineWorkProgram(*fields)
+
+    def learning_outcomes(self):
+        pass
+
+    def educational_program(self):
+        pass
+
+    def discipline_scope(self):
+        pass
+
+    def discipline_module(self):
+        pass
+
+    def discipline_materials(self):
+        pass
+
+    def get_discipline_program(self):
+        base = discipline_base()
 
     def printall(self, version):
         document = self.document

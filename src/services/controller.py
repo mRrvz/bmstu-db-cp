@@ -2,21 +2,36 @@
 
 import os
 
-import db.repository as repo
-from db.utils import Connection
+from db.repos.postgres import *
+from db.repos.tarantool import *
+from db.utils import PostgresConnection, TarantoolConnection
 
 class Controller():
     def __init__(self):
-        self.connection = Connection(
+        self.postgres_conn = PostgresConnection(
             os.getenv("POSTGRES_DB"),
             os.getenv("POSTGRES_USER"),
             os.getenv("POSTGRES_PASSWORD"),
             os.getenv("POSTGRES_HOST")
         )
 
-        self.discipline_work_program_repo = repo.DisciplineWorkProgramRepo(self.connection.get())
-        self.learning_outcomes_repo = repo.LearningOutcomesRepo(self.connection.get())
-        self.educational_program_repo = repo.EducationalProgramRepo(self.connection.get())
-        self.discipline_scope_repo = repo.DisciplineScopeRepo(self.connection.get())
-        self.discipline_module_repo = repo.DisciplineModuleRepo(self.connection.get())
-        self.discipline_material_repo = repo.DisciplineMaterialRepo(self.connection.get())
+        self.tarantool_conn = TarantoolConnection(
+            os.getenv("TARANTOOL_USER"),
+            os.getenv("TARANTOOL_PASSWORD"),
+            os.getenv("TARANTOOL_HOST"),
+            os.getenv("TARANTOOL_PORT")
+        )
+
+        self.discipline_work_program_repo_psql = DisciplineWorkProgramRepoPSQL(self.postgres_conn.get())
+        self.learning_outcomes_repo_psql = LearningOutcomesRepoPSQL(self.postgres_conn.get())
+        self.educational_program_repo_psql = EducationalProgramRepoPSQL(self.postgres_conn.get())
+        self.discipline_scope_repo_psql = DisciplineScopeRepoPSQL(self.postgres_conn.get())
+        self.discipline_module_repo_psql = DisciplineModuleRepoPSQL(self.postgres_conn.get())
+        self.discipline_material_repo_psql = DisciplineMaterialRepoPSQL(self.postgres_conn.get())
+
+        self.discipline_work_program_repo_tarantool = DisciplineWorkProgramRepoTarantool(self.tarantool_conn.get())
+        self.learning_outcomes_repo_tarantool = LearningOutcomesRepoTarantool(self.tarantool_conn.get())
+        self.educational_program_repo_tarantool = EducationalProgramRepoTarantool(self.tarantool_conn.get())
+        self.discipline_scope_repo_tarantool = DisciplineScopeRepoTarantool(self.tarantool_conn.get())
+        self.discipline_module_repo_tarantool = DisciplineModuleRepoTarantool(self.tarantool_conn.get())
+        self.discipline_material_repo_tarantool = DisciplineMaterialRepoTarantool(self.tarantool_conn.get())

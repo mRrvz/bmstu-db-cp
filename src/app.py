@@ -7,8 +7,8 @@ import time
 from flask import Flask, request
 import psycopg2
 
-import db.repository as repo
 import db.models as m
+from db.cache.cache import CacheLRU
 from services.controller import Controller
 from services.handler import RequestHandler
 from services.document_parser import DocumentParser
@@ -17,6 +17,7 @@ app = Flask(__name__)
 
 # Waiting for database initialization
 time.sleep(1)
+cache = CacheLRU()
 controller = Controller()
 
 @app.route("/")
@@ -27,10 +28,11 @@ def get_index():
 @app.route("/dpw/<filename>", methods=["POST"])
 def upload_from_file(filename=None):
     logging.info(f"/dpw/{filename} router called")
-    repo = controller.discipline_work_program_repo
+    repo = controller.discipline_work_program_repo_psql
 
     try:
         parser = DocumentParser(filename)
+        model = parser.get_discipline_program()
 
     except Exception as err:
         logging.error(err)
@@ -42,7 +44,7 @@ def upload_from_file(filename=None):
 @app.route("/dpw/all", methods=["GET"])
 def get_all_dpw():
     logging.info("/dpw/all router called")
-    repo = controller.discipline_work_program_repo
+    repo = controller.discipline_work_program_repo_psql
 
     try:
         models = repo.get_all()
@@ -56,10 +58,13 @@ def get_all_dpw():
 @app.route("/dpw/<id>", methods=["GET"])
 def get_dpw_by_id(id=None):
     logging.info(f"/dpw/{id} (GET) router called")
-    repo = controller.discipline_work_program_repo
+    repos = {
+        "postgres": controller.discipline_work_program_repo_psql,
+        "tarantool": controller.discipline_work_program_repo_tarantool
+    }
 
     try:
-        model = repo.get_by_id(id)
+        model = cache.get(id, repos)
     except Exception as err:
         logging.error(err)
         return RequestHandler.error_response(500, err)
@@ -70,10 +75,12 @@ def get_dpw_by_id(id=None):
 @app.route("/dpw/<id>", methods=["DELETE"])
 def remove_dpw_by_id(id=None):
     logging.info(f"/dpw/{id} (DELETE) router called")
-    repo = controller.discipline_work_program_repo
+    repo_psql = controller.discipline_work_program_repo_psql
+    repo_tarantool = controller.discipline_work_program_repo_tarantool
 
     try:
-        model = repo.remove(id)
+        model = repo_psql.remove(id)
+        cache.remove(id, repo_tarantool)
     except Exception as err:
         logging.error(err)
         return RequestHandler.error_response(500, err)
@@ -85,10 +92,12 @@ def remove_dpw_by_id(id=None):
 @app.route("/dpw/<id>", methods=["PUT"])
 def edit_dpw_by_id(id=None):
     logging.info(f"/dpw/{id} (PUT) router called")
-    repo = controller.discipline_work_program_repo
+    repo_psql = controller.discipline_work_program_repo_psql
+    repo_tararntool = controller.discipline_work_program_repo_tarantool
 
     try:
-        model = repo.edit(id=id, fields=request.get_json())
+        model = repo_psql.edit(id=id, fields=request.get_json())
+        cache.update(id, repo_tarantool)
     except Exception as err:
         logging.error(err)
         return RequestHandler.error_response(500, err)

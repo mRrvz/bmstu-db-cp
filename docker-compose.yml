@@ -6,6 +6,7 @@ services:
         context: .
         dockerfile: Dockerfile.app
       container_name: rpd-app
+      #command: 'python3 -c "while True: pass"'
       command: python3.8 app.py
       env_file:
         - .env
@@ -14,9 +15,10 @@ services:
       ports:
         - 5000:5000
       depends_on:
-        - db
+        - postgres-db
+        - tarantool-db
 
-    db:
+    postgres-db:
       build:
         context: .
         dockerfile: Dockerfile.db
@@ -28,3 +30,16 @@ services:
         - ./cfg:/cfg
       ports:
         - 5432:5432
+
+    tarantool-db:
+      image: tarantool/tarantool:2.7
+      container_name: tarantool-db-cache
+      command: tarantool
+      env_file:
+        - .env
+      volumes:
+        - ./src/db/cache:/cache
+        - ./data/tarantool:/var/lib/tarantool
+        - ./cfg:/cfg
+      ports:
+        - 3301:3301

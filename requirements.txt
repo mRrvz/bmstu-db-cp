@@ -1,2 +1,4 @@
 psycopg2>=2.8.5,<2.9.0
 Flask>=1.1.2,<1.2.0
+python-docx>=0.8
+tarantool>=0.7.1

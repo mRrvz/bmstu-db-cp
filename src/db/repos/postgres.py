@@ -1,35 +1,13 @@
-""" Repos for work with database """
+""" PostrgreSQL repos """
 
 import logging
-from abc import ABC, abstractmethod
 import psycopg2
 
-from db.utils import Formatter
+from db.utils import Utils
+from db.repos.abstract import AbstractRepo
 import db.models as models
 
-class AbstractRepo(ABC):
-    @abstractmethod
-    def save(self, model):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_by_id(self, model_id):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_all(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def remove(self, model_id):
-        raise NotImplementedError
-
-    @abstractmethod
-    def edit(self, *args, **kwargs):
-        raise NotImplementedError
-
-
-class DisciplineWorkProgramRepo(AbstractRepo):
+class DisciplineWorkProgramRepoPSQL(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
@@ -81,7 +59,7 @@ class DisciplineWorkProgramRepo(AbstractRepo):
 
     def edit(self, *args, **kwargs):
         obj_id = kwargs['id']
-        updated_args_str, updated_args = Formatter.get_update_args(kwargs['fields'])
+        updated_args_str, updated_args = Utils.get_psql_update_args(kwargs['fields'])
 
         with self.connection.cursor() as cursor:
             cursor.execute(
@@ -92,7 +70,7 @@ class DisciplineWorkProgramRepo(AbstractRepo):
             self.connection.commit()
 
 
-class LearningOutcomesRepo(AbstractRepo):
+class LearningOutcomesRepoPSQL(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
@@ -153,7 +131,7 @@ class LearningOutcomesRepo(AbstractRepo):
 
     def edit(self, *args, **kwargs):
         obj_id = kwargs['id']
-        updated_args_str, updated_args = Formatter.get_update_args(kwargs['fields'])
+        updated_args_str, updated_args = Utils.get_psql_update_args(kwargs['fields'])
 
         with self.connection.cursor() as cursor:
             cursor.execute(
@@ -164,7 +142,7 @@ class LearningOutcomesRepo(AbstractRepo):
             self.connection.commit()
 
 
-class EducationalProgramRepo(AbstractRepo):
+class EducationalProgramRepoPSQL(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
@@ -218,7 +196,7 @@ class EducationalProgramRepo(AbstractRepo):
 
     def edit(self, *args, **kwargs):
         obj_id = kwargs['id']
-        updated_args_str, updated_args = Formatter.get_update_args(kwargs['fields'])
+        updated_args_str, updated_args = Utils.get_psql_update_args(kwargs['fields'])
 
         with self.connection.cursor() as cursor:
             cursor.execute(
@@ -228,7 +206,7 @@ class EducationalProgramRepo(AbstractRepo):
 
             self.connection.commit()
 
-class DisciplineScopeRepo(AbstractRepo):
+class DisciplineScopeRepoPSQL(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
@@ -293,7 +271,7 @@ class DisciplineScopeRepo(AbstractRepo):
 
     def edit(self, *args, **kwargs):
         obj_id = kwargs['id']
-        updated_args_str, updated_args = Formatter.get_update_args(kwargs['fields'])
+        updated_args_str, updated_args = Utils.get_psql_update_args(kwargs['fields'])
 
         with self.connection.cursor() as cursor:
             cursor.execute(
@@ -304,7 +282,7 @@ class DisciplineScopeRepo(AbstractRepo):
             self.connection.commit()
 
 
-class DisciplineModuleRepo(AbstractRepo):
+class DisciplineModuleRepoPSQL(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
@@ -372,7 +350,7 @@ class DisciplineModuleRepo(AbstractRepo):
 
     def edit(self, *args, **kwargs):
         obj_id = kwargs['id']
-        updated_args_str, updated_args = Formatter.get_update_args(kwargs['fields'])
+        updated_args_str, updated_args = Utils.get_psql_update_args(kwargs['fields'])
 
         with self.connection.cursor() as cursor:
             cursor.execute(
@@ -383,7 +361,7 @@ class DisciplineModuleRepo(AbstractRepo):
             self.connection.commit()
 
 
-class DisciplineMaterialRepo(AbstractRepo):
+class DisciplineMaterialRepoPSQL(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
@@ -436,7 +414,7 @@ class DisciplineMaterialRepo(AbstractRepo):
 
     def edit(self, *args, **kwargs):
         obj_id = kwargs['id']
-        updated_args_str, updated_args = Formatter.get_update_args(kwargs['fields'])
+        updated_args_str, updated_args = Utils.get_psql_update_args(kwargs['fields'])
 
         with self.connection.cursor() as cursor:
             cursor.execute(

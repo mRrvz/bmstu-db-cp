@@ -3,7 +3,7 @@ LABEL maintainer="Alexey Romanov"
 
 ENV PYTHONBUFFERED 1
 
-RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache postgresql-client libxslt-dev libxml2-dev
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
     gcc postgresql-dev musl-dev
 

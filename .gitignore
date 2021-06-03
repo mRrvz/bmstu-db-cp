@@ -134,12 +134,15 @@ data/db
 # Data to parse
 dbdata/
 
-# PostgreSQL setting
-cfg/
-
 # .DS_Store
 .DS_Store
 
 # Logs
 logs.txt
 
+# Tarantool Logs
+*.snap
+*.xlog
+
+# Data
+data/
