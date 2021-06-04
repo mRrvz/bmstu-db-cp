@@ -1,6 +1,5 @@
 """ Help utilities for work with database """
 
-import time
 import psycopg2
 import tarantool
 
@@ -30,6 +29,7 @@ class PostgresConnection():
         if self.connection is not None:
             self.connection.close()
             self.connection = None
+
 
 class TarantoolConnection():
     def __init__(self, user, password, host, port):

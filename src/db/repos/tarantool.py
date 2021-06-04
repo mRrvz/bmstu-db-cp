@@ -20,7 +20,6 @@ class DisciplineWorkProgramRepoTarantool(AbstractRepo):
             logging.error("Trying to save DisciplineWorkProgram object of invalid type")
             raise TypeError("Expected object is instance of DisciplineWorkProgram")
 
-        print((model.id, model.name, model.author, model.competency))
         self.space.insert((model.id, model.name, model.author, model.competency))
 
     def get_by_id(self, model_id):

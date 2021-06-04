@@ -28,12 +28,12 @@ def get_index():
 @app.route("/dpw/<filename>", methods=["POST"])
 def upload_from_file(filename=None):
     logging.info(f"/dpw/{filename} router called")
-    repo = controller.discipline_work_program_repo_psql
+    repo_psql = controller.discipline_work_program_repo_psql
 
     try:
         parser = DocumentParser(filename)
         model = parser.get_discipline_program()
-
+        repo_psql.save(model)
     except Exception as err:
         logging.error(err)
         return RequestHandler.error_response(500, err)
@@ -59,12 +59,12 @@ def get_all_dpw():
 def get_dpw_by_id(id=None):
     logging.info(f"/dpw/{id} (GET) router called")
     repos = {
-        "postgres": controller.discipline_work_program_repo_psql,
-        "tarantool": controller.discipline_work_program_repo_tarantool
+        "postgres": controller.psql_repos,
+        "tarantool": controller.tarantool_repos,
     }
 
     try:
-        model = cache.get(id, repos)
+        model = cache.get_by_primary(id, "discipline_work_program", repos)
     except Exception as err:
         logging.error(err)
         return RequestHandler.error_response(500, err)

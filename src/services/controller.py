@@ -35,3 +35,21 @@ class Controller():
         self.discipline_scope_repo_tarantool = DisciplineScopeRepoTarantool(self.tarantool_conn.get())
         self.discipline_module_repo_tarantool = DisciplineModuleRepoTarantool(self.tarantool_conn.get())
         self.discipline_material_repo_tarantool = DisciplineMaterialRepoTarantool(self.tarantool_conn.get())
+
+        self.psql_repos = {
+            "discipline_work_program": self.discipline_work_program_repo_psql,
+            "learning_outcomes": self.learning_outcomes_repo_psql,
+            "educational_program": self.educational_program_repo_psql,
+            "discipline_scope": self.discipline_scope_repo_psql,
+            "discipline_module": self.discipline_module_repo_psql,
+            "discipline_material": self.discipline_material_repo_psql,
+        }
+
+        self.tarantool_repos = {
+            "discipline_work_program": self.discipline_work_program_repo_tarantool,
+            "learning_outcomes": self.learning_outcomes_repo_tarantool,
+            "educational_program": self.educational_program_repo_tarantool,
+            "discipline_scope": self.discipline_scope_repo_tarantool,
+            "discipline_module": self.discipline_module_repo_tarantool,
+            "discipline_material": self.discipline_material_repo_tarantool,
+        }
