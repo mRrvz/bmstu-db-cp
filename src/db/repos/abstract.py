@@ -12,6 +12,14 @@ class AbstractRepo(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_by_filter(self, filter, keys):
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_objects_count_by_filter(self, filter, keys):
+        raise NotImplementedError
+
+    @abstractmethod
     def get_all(self):
         raise NotImplementedError
 

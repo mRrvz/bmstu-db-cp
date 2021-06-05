@@ -21,12 +21,14 @@ class DisciplineWorkProgramRepoPSQL(AbstractRepo):
             raise TypeError("Expected object is instance of DisciplineWorkProgram")
 
         with self.connection.cursor() as cursor:
+            insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
-                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s, %s, %s)",
-                (model.id, model.name, model.author, model.competency),
+                f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES (%s, %s, %s) RETURNING id",
+                (model.name, model.author, model.competency),
             )
 
             self.connection.commit()
+            return cursor.fetchone()[0] # Return id of new row in database
 
     def get_by_id(self, model_id):
         with self.connection.cursor() as cursor:
@@ -38,16 +40,43 @@ class DisciplineWorkProgramRepoPSQL(AbstractRepo):
 
         return models.DisciplineWorkProgram(*orm_objects[0])
 
+    def get_by_filter(self, filter, keys):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM {self._meta['table_name']} WHERE {filter}", keys)
+
+            orm_objects = cursor.fetchall()
+            if len(orm_objects) == 0:
+                return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in orm_objects:
+            model = models.DisciplineWorkProgram(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM {self._meta['table_name']} WHERE {field} = %s", (key,))
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                return None
+
+        return orm_objects[0][0]
+
     def get_all(self):
         with self.connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM {self._meta['table_name']}")
             orm_objects = cursor.fetchall()
 
-        objects = list()
+        models_list = list()
         for obj in orm_objects:
-            objects.append(models.DisciplineWorkProgram(*obj))
+            models_list.append(models.DisciplineWorkProgram(*obj))
 
-        return objects
+        return models_list
 
     def remove(self, id):
         with self.connection.cursor() as cursor:
@@ -91,14 +120,16 @@ class LearningOutcomesRepoPSQL(AbstractRepo):
             raise TypeError("Expected object is instance of LearningOutcomes")
 
         with self.connection.cursor() as cursor:
+            insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
-                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s, %s, %s, %s, %s)", (
-                    model.id, model.discipline_id, model.competency_code,
+                f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES (%s, %s, %s, %s, %s) RETURNING id", (
+                    model.discipline_id, model.competency_code,
                     model.formulation, model.results, model.forms_and_methods
                 ),
             )
 
             self.connection.commit()
+            return cursor.fetchone()[0]
 
     def get_by_id(self, model_id):
         with self.connection.cursor() as cursor:
@@ -108,18 +139,45 @@ class LearningOutcomesRepoPSQL(AbstractRepo):
             if len(orm_objects) == 0:
                 raise ValueError(f"Learning outcomes of discipline with id = {model_id} doesn't exists")
 
-        return models.DisciplineWorkProgram(*orm_objects[0])
+        return models.LearningOutcomes(*orm_objects[0])
+
+    def get_by_filter(self, filter, keys):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM {self._meta['table_name']} WHERE {filter}", keys)
+
+            orm_objects = cursor.fetchall()
+            if len(orm_objects) == 0:
+                return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in orm_objects:
+            model = models.LearningOutcomes(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM {self._meta['table_name']} WHERE {field} = %s", (key,))
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                return None
+
+        return orm_objects[0][0]
 
     def get_all(self):
         with self.connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM {self._meta['table_name']}")
             orm_objects = cursor.fetchall()
 
-        objects = list()
+        models_list = list()
         for obj in orm_objects:
-            objects.append(models.DisciplineWorkProgram(*obj))
+            models_list.append(models.LearningOutcomes(*obj))
 
-        return objects
+        return models_list
 
     def remove(self, id):
         with self.connection.cursor() as cursor:
@@ -147,6 +205,8 @@ class EducationalProgramRepoPSQL(AbstractRepo):
         self.connection = connection
         self._meta = {
             "table_name": "educational_program",
+            "interconnection_table_name": "discipline_educational_program",
+            "ict_field_name": "educational_program_id",
             "field_names": {
                 "id": int,
                 "name": str
@@ -158,12 +218,14 @@ class EducationalProgramRepoPSQL(AbstractRepo):
             logging.error("Trying to save EducationalProgram object of invalid type")
             raise TypeError("Expected object is instance of EducationalProgram")
 
-        with self.connection.cursor() as cursor:
+        with self.connection.cursor() as cursor: # TODO
             cursor.execute(
-                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s)",  (model.id, model.name)
+                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s) RETURNING id",
+                    (model.id, model.name)
             )
 
             self.connection.commit()
+            return cursor.fetchone()[0]
 
     def get_by_id(self, model_id):
         with self.connection.cursor() as cursor:
@@ -171,20 +233,52 @@ class EducationalProgramRepoPSQL(AbstractRepo):
             orm_objects = cursor.fetchall()
 
             if len(orm_objects) == 0:
-                raise ValueError(f"Educational program of discipline with id = {model_id} doesn't exists")
+                raise ValueError(f"Educational program with id = {model_id} doesn't exists")
 
-        return models.DisciplineWorkProgram(*orm_objects[0])
+        return models.EducationalProgram(*orm_objects[0])
+
+    def get_by_filter(self, filter, keys):
+        with self.connection.cursor() as cursor:
+            # t = f"SELECT id, name FROM {self._meta['interconnection_table_name']} JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) WHERE {filter}"
+            #logging.error(t)
+            cursor.execute(f"\
+                SELECT id, name FROM {self._meta['interconnection_table_name']} \
+                JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) \
+                WHERE {filter}", keys)
+
+            orm_objects = cursor.fetchall()
+            if len(orm_objects) == 0:
+                return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in orm_objects:
+            model = models.EducationalProgram(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM {self._meta['table_name']} WHERE {field} = %s", (key,))
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                return None
+
+        return orm_objects[0][0]
 
     def get_all(self):
         with self.connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM {self._meta['table_name']}")
             orm_objects = cursor.fetchall()
 
-        objects = list()
+        models_list = list()
         for obj in orm_objects:
-            objects.append(models.DisciplineWorkProgram(*obj))
+            models_list.append(models.EducationalProgram(*obj))
 
-        return objects
+        return models_list
 
     def remove(self, id):
         with self.connection.cursor() as cursor:
@@ -205,6 +299,7 @@ class EducationalProgramRepoPSQL(AbstractRepo):
             )
 
             self.connection.commit()
+
 
 class DisciplineScopeRepoPSQL(AbstractRepo):
     def __init__(self, connection):
@@ -230,15 +325,18 @@ class DisciplineScopeRepoPSQL(AbstractRepo):
             raise TypeError("Expected object is instance of DisciplineScope")
 
         with self.connection.cursor() as cursor:
+            insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
-                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
-                    model.id, model.discipline_id, model.semester_number, model.credit_units,
+                f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES \
+                 (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id", (
+                    model.discipline_id, model.semester_number, model.credit_units,
                     model.total_hours, model.lectures_hours, model.seminars_hours,
                     model.laboratory_hours, model.independent_hours, model.certification_type
                 ),
             )
 
             self.connection.commit()
+            return cursor.fetchone()[0]
 
     def get_by_id(self, model_id):
         with self.connection.cursor() as cursor:
@@ -248,18 +346,45 @@ class DisciplineScopeRepoPSQL(AbstractRepo):
             if len(orm_objects) == 0:
                 raise ValueError(f"Scope of discipline with id = {model_id} doesn't exists")
 
-        return models.DisciplineWorkProgram(*orm_objects[0])
+        return models.DisciplineScope(*orm_objects[0])
+
+    def get_by_filter(self, filter, keys):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM {self._meta['table_name']} WHERE {filter}", keys)
+
+            orm_objects = cursor.fetchall()
+            if len(orm_objects) == 0:
+                return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in orm_objects:
+            model = models.DisciplineScope(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM {self._meta['table_name']} WHERE {field} = %s", (key,))
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                return None
+
+        return orm_objects[0][0]
 
     def get_all(self):
         with self.connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM {self._meta['table_name']}")
             orm_objects = cursor.fetchall()
 
-        objects = list()
+        models_list = list()
         for obj in orm_objects:
-            objects.append(models.DisciplineWorkProgram(*obj))
+            models_list.append(models.DisciplineScope(*obj))
 
-        return objects
+        return models_list
 
     def remove(self, id):
         with self.connection.cursor() as cursor:
@@ -308,9 +433,11 @@ class DisciplineModuleRepoPSQL(AbstractRepo):
             raise TypeError("Expected object is instance of DisciplineModule")
 
         with self.connection.cursor() as cursor:
+            insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
-                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
-                    model.id, model.discipline_id, model.name, model.semester_number,
+                f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES \
+                 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                    model.discipline_id, model.name, model.semester_number,
                     model.lectures_hours, model.classroom_hours, model.seminars_hours,
                     model.laboratory_hours, model.independent_hours, model.min_score,
                     model.max_score, model.competency_code
@@ -318,6 +445,7 @@ class DisciplineModuleRepoPSQL(AbstractRepo):
             )
 
             self.connection.commit()
+            return cursor.fetchone()[0]
 
     def get_by_id(self, model_id):
         with self.connection.cursor() as cursor:
@@ -327,18 +455,48 @@ class DisciplineModuleRepoPSQL(AbstractRepo):
             if len(orm_objects) == 0:
                 raise ValueError(f"Module of discipline with id = {model_id} doesn't exists")
 
-        return models.DisciplineWorkProgram(*orm_objects[0])
+        return models.DisciplineModule(*orm_objects[0])
+
+    def get_by_filter(self, filter, keys):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM {self._meta['table_name']} WHERE {filter}", keys)
+
+            orm_objects = cursor.fetchall()
+            if len(orm_objects) == 0:
+                return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in orm_objects:
+            model = models.DisciplineModule(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM {self._meta['table_name']} WHERE {field} = %s", (key,))
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                return None
+
+        return orm_objects[0][0]
 
     def get_all(self):
         with self.connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM {self._meta['table_name']}")
             orm_objects = cursor.fetchall()
 
-        objects = list()
-        for obj in orm_objects:
-            objects.append(models.DisciplineWorkProgram(*obj))
+            if len(orm_objects) == 0:
+                return None
 
-        return objects
+        models_list = list()
+        for obj in orm_objects:
+            models_list.append(models.DisciplineModule(*obj))
+
+        return models_list
 
     def remove(self, id):
         with self.connection.cursor() as cursor:
@@ -375,13 +533,15 @@ class DisciplineMaterialRepoPSQL(AbstractRepo):
             raise TypeError("Expected object is instance of DisciplineMaterial")
 
         with self.connection.cursor() as cursor:
+            insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
-                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s, %s)", (
-                    model.id, model.discipline_id, model.material
+                f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES (%s, %s) RETURNING id", (
+                    model.discipline_id, model.material
                 ),
             )
 
             self.connection.commit()
+            return cursor.fetchone()[0]
 
     def get_by_id(self, model_id):
         with self.connection.cursor() as cursor:
@@ -391,18 +551,48 @@ class DisciplineMaterialRepoPSQL(AbstractRepo):
             if len(orm_objects) == 0:
                 raise ValueError(f"Material's of discipline with id = {model_id} doesn't exists")
 
-        return models.DisciplineWorkProgram(*orm_objects[0])
+        return models.DisciplineMaterial(*orm_objects[0])
+
+    def get_by_filter(self, filter, keys):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM {self._meta['table_name']} WHERE {filter}", keys)
+
+            orm_objects = cursor.fetchall()
+            if len(orm_objects) == 0:
+                return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in orm_objects:
+            model = models.DisciplineMaterial(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM {self._meta['table_name']} WHERE {field} = %s", (key,))
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                return None
+
+        return orm_objects[0][0]
 
     def get_all(self):
         with self.connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM {self._meta['table_name']}")
             orm_objects = cursor.fetchall()
 
-        objects = list()
-        for obj in orm_objects:
-            objects.append(models.DisciplineWorkProgram(*obj))
+            if len(orm_objects) == 0:
+                return None
 
-        return objects
+        models_list = list()
+        for obj in orm_objects:
+            models_list.append(models.DisciplineMaterial(*obj))
+
+        return models_list
 
     def remove(self, id):
         with self.connection.cursor() as cursor:

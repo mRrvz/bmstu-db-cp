@@ -3,14 +3,14 @@ CREATE DATABASE lms_dpw;
 \c lms_dpw;
 
 CREATE TABLE discipline_work_program (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     author VARCHAR(64),
     competency VARCHAR(16) NOT NULL
 );
 
 CREATE TABLE learning_outcomes (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     discipline_id INT NOT NULL,
     competency_code VARCHAR(32) NOT NULL,
     formulation VARCHAR(1024) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE discipline_educational_program (
 );
 
 CREATE TABLE discipline_scope_semester (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     discipline_id INT NOT NULL,
     semester_number INT NOT NULL,
     credit_units INT NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE discipline_scope_semester (
 );
 
 CREATE TABLE discipline_module (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     discipline_id INT NOT NULL,
     name VARCHAR(256) NOT NULL,
     semested_number INT NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE discipline_module (
 );
 
 CREATE TABLE discipline_material (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     discipline_id INT NOT NULL,
     material VARCHAR(1024) NOT NULL,
     FOREIGN KEY (discipline_id) REFERENCES discipline_work_program(id)

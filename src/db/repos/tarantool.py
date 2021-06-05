@@ -23,25 +23,46 @@ class DisciplineWorkProgramRepoTarantool(AbstractRepo):
         self.space.insert((model.id, model.name, model.author, model.competency))
 
     def get_by_id(self, model_id):
-        obj = self.space.select(int(model_id))
+        obj = self.space.select(model_id)
         if len(obj) == 0:
             return None
 
         return models.DisciplineWorkProgram(*obj[0])
 
+    def get_by_filter(self, index, key):
+        raw_objects = self.space.select(key, index=index)
+        if len(obj) == 0:
+            return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in raw_objects:
+            model = models.DisciplineWorkProgram(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        raise NotImplementedError
+
     def get_all(self):
-        selected = self.space.select()
-        if len(selected) == 0:
+        raw_objects = self.space.select()
+        if len(raw_objects) == 0:
             return None
 
-        objects = list()
-        for obj in selected:
-            objects.append(models.DisciplineWorkProgram(*obj))
+        models_list = list()
+        for obj in raw_objects:
+            models_list.append(models.DisciplineWorkProgram(*obj))
 
-        return objects
+        return models_list
 
     def remove(self, id):
-        return self.space.delete(int(id))[0]
+        obj = self.space.delete(int(id))
+        if len(obj) == 0:
+            return None
+
+        return obj
 
     def edit(self, *args, **kwargs):
         obj_id = kwargs['id']
@@ -54,7 +75,7 @@ class LearningOutcomesRepoTarantool(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
-            "table_name": "learning_outcomes",
+            "space_name": "learning_outcomes",
             "field_names": {
                 "id": 1,
                 "discipline_id": 2,
@@ -65,11 +86,34 @@ class LearningOutcomesRepoTarantool(AbstractRepo):
             }
         }
 
-    def save(self):
-        raise NotImplementedError
+        self.space = connection.space(self._meta['space_name'])
+
+    def save(self, model):
+        if not isinstance(model, models.LearningOutcomes):
+            logging.error("Trying to save LeraningOutcomes object of invalid type")
+            raise TypeError("Expected object is instance of LearningOutcomes")
+
+        self.space.insert(tuple(model.__dict__.values()))
 
     def get_by_id(self, model_id):
         return NotImplementedError
+
+    def get_by_filter(self, index, key):
+        raw_objects = self.space.select(key, index=index)
+        if len(raw_objects) == 0:
+            return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in raw_objects:
+            model = models.LearningOutcomes(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
+        raise NotImplementedError
 
     def get_all(self):
         raise NotImplementedError
@@ -85,17 +129,27 @@ class EducationalProgramRepoTarantool(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
-            "table_name": "educational_program",
+            "space_name": "educational_program",
+            "interconnection_space_name": "discipline_educational_program",
+            "isp_field": "educational_program_id",
             "field_names": {
                 "id": 1,
                 "name": 2
             }
         }
 
-    def save(self):
-        raise NotImplementedError
+        self.space = connection.space(self._meta['space_name'])
+
+    def save(self, model):
+        raise NotImplementedError # TODO
 
     def get_by_id(self, model_id):
+        raise NotImplementedError
+
+    def get_by_filter(self, key, index):
+        raise NotImplementedError # TODO
+
+    def get_objects_count_by_filter(self, index, key):
         raise NotImplementedError
 
     def get_all(self):
@@ -111,7 +165,7 @@ class DisciplineScopeRepoTarantool(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
-            "table_name": "discipline_scope_semester",
+            "space_name": "discipline_scope_semester",
             "field_names": {
                 "id": 1,
                 "discipline_id": 2,
@@ -125,10 +179,33 @@ class DisciplineScopeRepoTarantool(AbstractRepo):
             }
         }
 
-    def save(self):
-        raise NotImplementedError
+        self.space = connection.space(self._meta['space_name'])
+
+    def save(self, model):
+        if not isinstance(model, models.DisciplineScope):
+            logging.error("Trying to save DisciplineScope object of invalid type")
+            raise TypeError("Expected object is instance of DisciplineScope")
+
+        self.space.insert(tuple(model.__dict__.values()))
 
     def get_by_id(self, model_id):
+        raise NotImplementedError
+
+    def get_by_filter(self, index, key):
+        raw_objects = self.space.select(key, index=index)
+        if len(raw_objects) == 0:
+            return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in raw_objects:
+            model = models.DisciplineScope(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
         raise NotImplementedError
 
     def get_all(self):
@@ -145,7 +222,7 @@ class DisciplineModuleRepoTarantool(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
-            "table_name": "discipline_module",
+            "space_name": "discipline_module",
             "field_names": {
                 "id": 1,
                 "discipline_id": 2,
@@ -161,10 +238,33 @@ class DisciplineModuleRepoTarantool(AbstractRepo):
             }
         }
 
-    def save(self):
-        raise NotImplementedError
+        self.space = connection.space(self._meta['space_name'])
+
+    def save(self, model):
+        if not isinstance(model, models.DisciplineModule):
+            logging.error("Trying to save DisciplineModule object of invalid type")
+            raise TypeError("Expected object is instance of DisciplineModule")
+
+        self.space.insert(tuple(model.__dict__.values()))
 
     def get_by_id(self, model_id):
+        raise NotImplementedError
+
+    def get_by_filter(self, index, key):
+        raw_objects = self.space.select(key, index=index)
+        if len(raw_objects) == 0:
+            return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in raw_objects:
+            model = models.DisciplineModule(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
         raise NotImplementedError
 
     def get_all(self):
@@ -181,14 +281,37 @@ class DisciplineMaterialRepoTarantool(AbstractRepo):
     def __init__(self, connection):
         self.connection = connection
         self._meta = {
-            "table_name": "discipline_material",
+            "space_name": "discipline_material",
             "field_names": {"id": 1, "discipline_id": 2, "materials": 3}
         }
 
-    def save(self):
-        raise NotImplementedError
+        self.space = connection.space(self._meta['space_name'])
+
+    def save(self, model):
+        if not isinstance(model, models.DisciplineMaterial):
+            logging.error("Trying to save DisciplineMaterial object of invalid type")
+            raise TypeError("Expected object is instance of DisciplineMaterial")
+
+        self.space.insert(tuple(model.__dict__.values()))
 
     def get_by_id(self, model_id):
+        raise NotImplementedError
+
+    def get_by_filter(self, index, key):
+        raw_objects = self.space.select(key, index=index)
+        if len(raw_objects) == 0:
+            return None, None
+
+        models_list = list()
+        primary_keys = list()
+        for obj in raw_objects:
+            model = models.DisciplineMaterial(*obj)
+            models_list.append(model)
+            primary_keys.append(model.id)
+
+        return models_list, primary_keys
+
+    def get_objects_count_by_filter(self, field, key):
         raise NotImplementedError
 
     def get_all(self):

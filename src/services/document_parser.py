@@ -34,7 +34,8 @@ class DocumentParser():
         pass
 
     def get_discipline_program(self):
-        base = discipline_base()
+        base = self.discipline_base()
+        return base
 
     def printall(self, version):
         document = self.document

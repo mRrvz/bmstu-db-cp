@@ -52,7 +52,7 @@ learning_outcomes_space:create_index('id_index', {
     parts = {'id'}
 })
 
-learning_outcomes_space:create_index('discipline_id_index', {
+learning_outcomes_space:create_index('discipline_id', {
     type = 'tree',
     parts = {'discipline_id'},
     unique = false,
@@ -102,7 +102,7 @@ discipline_scope_semester_space:create_index('id_index', {
     parts = {'id'}
 })
 
-discipline_scope_semester_space:create_index('discipline_id_index', {
+discipline_scope_semester_space:create_index('discipline_id', {
     type = 'tree',
     parts = {'discipline_id'},
     unique = false,
@@ -135,7 +135,7 @@ discipline_module_space:create_index('id_index', {
     parts = {'id'}
 })
 
-discipline_module_space:create_index('discipline_id_index', {
+discipline_module_space:create_index('discipline_id', {
     type = 'tree',
     parts = {'discipline_id'},
     unique = false,
@@ -160,7 +160,7 @@ discipline_material_space:create_index('id_index', {
     parts = {'id'}
 })
 
-discipline_material_space:create_index('discipline_id_index', {
+discipline_material_space:create_index('discipline_id', {
     type = 'tree',
     parts = {'discipline_id'},
     unique = false,

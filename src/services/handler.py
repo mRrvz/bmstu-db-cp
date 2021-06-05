@@ -6,9 +6,9 @@ class RequestHandler():
     @staticmethod
     def success_response(data=None, message=None):
         if type(data) == list:
-            data = list(map(lambda x: x.__dict__, data))
+            data = list(map(lambda x: x.serialize(), data))
         elif data is not None:
-            data = data.__dict__
+            data = data.serialize()
 
         return jsonify(code=200, data=data, message=message), 200
 

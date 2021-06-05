@@ -2,6 +2,7 @@
 
 import psycopg2
 import tarantool
+import logging
 
 class PostgresConnection():
     def __init__(self, dbname, user, password, host):
@@ -74,6 +75,16 @@ class Utils():
         return source_str[:-2], tuple(values)
 
     @staticmethod
+    def get_insert_fields(table_fields):
+        raw_string = f"("
+        for field in table_fields:
+            if field != "id":
+                raw_string += f"{field}, "
+
+        return f"{raw_string[:-2]})"
+
+
+    @staticmethod
     def get_tarantool_update_args(fields, space_format):
         value = list()
         for key in fields:
@@ -81,3 +92,24 @@ class Utils():
             values.append(('=', index, args[key]))
 
         return value
+
+    @staticmethod
+    def collect_discipline_fields(model, key, cache, repos):
+        for space_name in repos["cache"]:
+            if space_name in "discipline_work_program":
+                continue
+            elif space_name == "educational_program": # TODO
+                value, _ = repos["storage"][space_name].get_by_filter("discipline_id = %s", (key,))
+            else:
+                value = cache.get_by_filter(space_name, key, "discipline_id", repos)
+
+            setattr(model, space_name, value)
+
+            logging.error(f"OKAY: {space_name}")
+
+        return model
+
+    @staticmethod
+    def get_noncached_filter_string(primary_keys_cnt, secondary_field):
+        primary_values = ("%s, " * primary_keys_cnt)[:-2]
+        return f"{secondary_field} = %s AND id NOT IN ({primary_values})"

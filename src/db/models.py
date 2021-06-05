@@ -4,10 +4,14 @@ import json
 
 class DisciplineWorkProgram():
     def __init__(
-        self, id, name, author, competency,
-        learning_outcomes=None, educational_program=None, scope=None, module=None, material=None
+        self, id, name, author, competency, learning_outcomes=None,
+        educational_program=None, scope=None, module=None, material=None
     ):
-        self.id = id
+        if id is not None:
+            self.id = int(id)
+        else:
+            self.id = None
+
         self.name = name
         self.author = author
         self.competency = competency
@@ -17,30 +21,46 @@ class DisciplineWorkProgram():
         self.discipline_module = module
         self.discipline_material = material
 
-    def to_json(self):
-        return json.dumps(self.__dict__)
+    def serialize(self):
+        dictionary = {}
+        for field in self.__dict__.keys():
+            value = getattr(self, field)
+
+            if type(value) == list:
+                dictionary[field] = self.serialize_list_field(field)[0]
+            else:
+                dictionary[field] = value
+
+        return dictionary
+
+    def serialize_list_field(self, field):
+        return None if getattr(self, field) is None else list(map(lambda x: x.serialize(), getattr(self, field))),
 
 
 class LearningOutcomes():
     def __init__(self, id, discipline_id, competency, formulation, results, methods):
-        self.id = id
-        self.discipline_id = discipline_id
+        if id is not None:
+            self.id = int(id)
+        else:
+            self.id = None
+
+        self.discipline_id = int(discipline_id)
         self.competency_code = competency
         self.formulation = formulation
         self.results = results
         self.forms_and_methods = methods
 
-    def to_json(self):
-        return json.dumps(self.__dict__)
+    def serialize(self):
+        return self.__dict__
 
 
 class EducationalProgram():
     def __init__(self, id, name):
-        self.id = id
+        self.id = str(id)
         self.name = name
 
-    def to_json(self):
-        return json.dumps(self.__dict__)
+    def serialize(self):
+        return self.__dict__
 
 
 class DisciplineScope():
@@ -48,48 +68,59 @@ class DisciplineScope():
         self, id, discipline_id, sem_n, credit_units,
         total_h, lectures_h, seminars_h, laboratory_h, independent_h, certification_type
     ):
-        self.id = id
-        self.discipline_id = discipline_id
-        self.semester_number = sem_n
-        self.credit_units = credit_units
-        self.total_hours = total_h
-        self.lectures_hours = lectures_h
-        self.seminars_hours = seminars_h
-        self.laboratory_hours = laboratory_h
-        self.independent_hours = independent_h
+        if id is not None:
+            self.id = int(id)
+        else:
+            self.id = None
+
+        self.discipline_id = int(discipline_id)
+        self.semester_number = int(sem_n)
+        self.credit_units = int(credit_units)
+        self.total_hours = int(total_h)
+        self.lectures_hours = int(lectures_h)
+        self.seminars_hours = int(seminars_h)
+        self.laboratory_hours = int(laboratory_h)
+        self.independent_hours = int(independent_h)
         self.certification_type = certification_type
 
-    def to_json(self):
-        return json.dumps(self.__dict__)
+    def serialize(self):
+        return self.__dict__
 
 
 class DisciplineModule():
     def __init__(
-        self, id, discipline_id, name, sem_n, lectures_h, classroom_h,
-        seminars_h, laboratory_h, independent_h, min_score, max_score, competency_code
+        self, id, discipline_id, name, sem_n, lectures_h, seminars_h,
+        laboratory_h, independent_h, min_score, max_score, competency_code
     ):
-        self.id = id
-        self.discipline_id = discipline_id
+        if id is not None:
+            self.id = int(id)
+        else:
+            self.id = None
+
+        self.discipline_id = int(discipline_id)
         self.name = name
-        self.semester_number = sem_n
-        self.lectures_hours = lectures_h
-        self.classroom_hours = classroom_h
-        self.seminars_hours = seminars_h
-        self.laboratory_hours = laboratory_h
-        self.independent_hours = independent_h
-        self.min_score = min_score
-        self.max_score = max_score
+        self.semester_number = int(sem_n)
+        self.lectures_hours = int(lectures_h)
+        self.seminars_hours = int(seminars_h)
+        self.laboratory_hours = int(laboratory_h)
+        self.independent_hours = int(independent_h)
+        self.min_score = int(min_score)
+        self.max_score = int(max_score)
         self.competency_code = competency_code
 
-    def to_json(self):
-        return json.dumps(self.__dict__)
+    def serialize(self):
+        return self.__dict__
 
 
 class DisciplineMaterial():
     def __init__(self, id, discipline_id, material):
-        self.id = id
-        self.discipline_id = discipline_id
+        if id is not None:
+            self.id = int(id)
+        else:
+            self.id = None
+
+        self.discipline_id = int(discipline_id)
         self.material = material
 
-    def to_json(self):
-        return json.dumps(self.__dict__)
+    def serialize(self):
+        return self.__dict__
