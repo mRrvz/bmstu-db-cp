@@ -29,11 +29,7 @@ controller = Controller()
 def upload_from_file():
     logging.info(f"/rpd/save router called")
     repo_psql = controller.discipline_work_program_repo_psql
-    logging.error(request.get_json())
     filename = request.get_json()["filename"]
-    logging.error(filename)
-    import os
-    logging.error(os.getcwd())
 
     try:
         parser = DocumentParser(filename)
@@ -41,7 +37,6 @@ def upload_from_file():
         model.id = repo_psql.save(model)
         model = Utils.save_discipline_fields(model, controller.psql_repos)
     except Exception as err:
-        raise err
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
@@ -65,7 +60,6 @@ def get_dpw_by_id(id=None):
         t2 = datetime.timestamp(datetime.now())
         logging.error(f"TIME: {t2 - t1}")
     except Exception as err:
-        raise err
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
