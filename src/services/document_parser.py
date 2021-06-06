@@ -286,7 +286,7 @@ class ModuleIterator():
             self.row = self.table.rows[self.row_ind].cells[1:]
 
         for i, cell in enumerate(self.row):
-            if i >= self.magic_number - 2 and i < self.magic_number or i in (self.magic_number + 1, self.magic_number + 2):
+            if i in (self.magic_number - 2, self.magic_number - 1, self.magic_number + 1, self.magic_number + 2):
                 continue
 
             if i == 1:

@@ -245,11 +245,6 @@ class EducationalProgramRepoPSQL(AbstractRepo):
 
     def get_by_filter(self, filter, keys):
         with self.connection.cursor() as cursor:
-            query = f"SELECT id, name FROM {self._meta['interconnection_table_name']} \
-                JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) \
-                WHERE {filter}"
-
-            logging.error(f"QUERY: {query}")
             cursor.execute(f"\
                 SELECT id, name FROM {self._meta['interconnection_table_name']} \
                 JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) \
@@ -267,7 +262,6 @@ class EducationalProgramRepoPSQL(AbstractRepo):
             models_list.append(model)
             primary_keys.append(model.id)
 
-        logging.error(f"LEN: {models_list}")
         return models_list, primary_keys
 
     def get_objects_count_by_filter(self, field, key):
@@ -291,9 +285,12 @@ class EducationalProgramRepoPSQL(AbstractRepo):
 
         return models_list
 
-    def remove(self, id):
+    def remove(self, id, *args, **kwargs):
         with self.connection.cursor() as cursor:
-            cursor.execute(f"DELETE FROM {self._meta['interconnection_table_name']} WHERE discipline_id = %s", (model.id,))
+            cursor.execute(
+                f"DELETE FROM {self._meta['interconnection_table_name']} WHERE discipline_id = %s",
+                (kwargs['discipline_id'],))
+
             cursor.execute(f"DELETE FROM {self._meta['table_name']} WHERE id = %s", (id,))
             if cursor.rowcount == 0:
                 raise ValueError(f"Educational program of discipline with id = {id} doesn't exists.")

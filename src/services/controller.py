@@ -40,7 +40,7 @@ class Controller():
             "discipline_work_program": self.discipline_work_program_repo_psql,
             "learning_outcomes": self.learning_outcomes_repo_psql,
             "educational_program": self.educational_program_repo_psql,
-            "discipline_scope": self.discipline_scope_repo_psql,
+            "discipline_scope_semester": self.discipline_scope_repo_psql,
             "discipline_module": self.discipline_module_repo_psql,
             "discipline_material": self.discipline_material_repo_psql,
         }
@@ -49,7 +49,7 @@ class Controller():
             "discipline_work_program": self.discipline_work_program_repo_tarantool,
             "learning_outcomes": self.learning_outcomes_repo_tarantool,
             "educational_program": self.educational_program_repo_tarantool,
-            "discipline_scope": self.discipline_scope_repo_tarantool,
+            "discipline_scope_semester": self.discipline_scope_repo_tarantool,
             "discipline_module": self.discipline_module_repo_tarantool,
             "discipline_material": self.discipline_material_repo_tarantool,
         }

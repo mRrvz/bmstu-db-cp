@@ -105,6 +105,7 @@ class CacheLRU():
             space_name = repos[key]._meta["space_name"]
             connection.call(f"box.space.{space_name}:truncate", ())
 
+        self.current_size = 0
         connection.space("cache_size").replace((1, 0))
 
     def increment_cache_size(self, connection):

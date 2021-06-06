@@ -80,7 +80,6 @@ def remove_dpw_by_id(id=None):
         model = cache.get_by_primary(int(id), "discipline_work_program", repos)
         Utils.remove_discipline_fields(model, cache, repos)
         repo_psql.remove(model.id)
-        cache.remove(model.id, "discipline_work_program", repo_tarantool)
     except Exception as err:
         logging.error(err)
         return RequestHandler.error_response(500, err)
@@ -97,7 +96,6 @@ def edit_dpw_by_id(id=None):
 
     try:
         model = repo_psql.edit(id=int(id), fields=request.get_json())
-        cache.update(int(id), repo_tarantool)
     except Exception as err:
         logging.error(err)
         return RequestHandler.error_response(500, err)
@@ -132,6 +130,20 @@ def cache_size():
         return RequestHandler.error_response(500, err)
 
     return RequestHandler.success_response(message=f"Cache size is {size}")
+
+
+@app.route("/cache/<id>", methods=["DELETE"])
+def remove_from_cache(id=None):
+    logging.info(f"Remove from cache with id = {id} router called")
+    space_name = request.get_json()["space_name"]
+
+    try:
+        cache.remove(int(id), space_name, controller.tarantool_repos[space_name])
+    except Exception as err:
+        logging.error(err)
+        return RequestHandler.error_response(500, err)
+
+    return RequestHandler.success_response(message=f"Cache successfully cleared")
 
 
 @app.errorhandler(404)

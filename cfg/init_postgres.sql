@@ -67,3 +67,52 @@ CREATE TABLE discipline_material (
     material VARCHAR(1024) NOT NULL,
     FOREIGN KEY (discipline_id) REFERENCES discipline_work_program(id)
 );
+
+-- Triggers for remove updated / deleted row from Tarantool cache.
+CREATE EXTENSION PLPYTHON3U;
+
+CREATE OR REPLACE FUNCTION remove_from_cache_py()
+RETURNS TRIGGER
+AS $$
+    import requests
+    import json
+
+    url = f'http://rpd-app:5000/cache/{ + TD["old"]["id"]}'
+    data = {'space_name': TD["table_name"]}
+    headers = {'content-type': 'application/json'}
+    response = requests.delete(
+        url,
+        data=json.dumps(data),
+        headers=headers,
+    )
+$$ LANGUAGE PLPYTHON3U;
+
+CREATE TRIGGER remove_from_cache_dwp_delete AFTER DELETE ON discipline_work_program
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_dwp_update AFTER UPDATE ON discipline_work_program
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_lo_delete AFTER DELETE ON learning_outcomes
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_lo_update AFTER UPDATE ON learning_outcomes
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_dss_delete AFTER DELETE ON discipline_scope_semester
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_dss_update AFTER UPDATE ON discipline_scope_semester
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_dm_delete AFTER DELETE ON discipline_module
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_dm_update AFTER UPDATE ON discipline_module
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_dmat_delete AFTER DELETE ON discipline_material
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+
+CREATE TRIGGER remove_from_cache_dmat_update AFTER UPDATE ON discipline_material
+FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();

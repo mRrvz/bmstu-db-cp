@@ -125,14 +125,17 @@ class Utils():
     @staticmethod
     def remove_discipline_fields(model, cache, repos):
         model = Utils.collect_discipline_fields(model, cache, repos)
-
         for key in repos["storage"]:
-            if key != "discipline_work_program":
-                fields = getattr(model, key)
-                if fields is not None:
-                    for subfield in fields:
+            if key == "discipline_work_program":
+                continue
+
+            fields = getattr(model, key)
+            if fields is not None:
+                for subfield in fields:
+                    if key == "educational_program":
+                        repos["storage"][key].remove(subfield.id, discipline_id=model.id)
+                    else:
                         repos["storage"][key].remove(subfield.id)
-                        cache.remove(subfield.id, key, repos["cache"][key])
 
     @staticmethod
     def get_noncached_filter_string(primary_keys_cnt, secondary_field):
