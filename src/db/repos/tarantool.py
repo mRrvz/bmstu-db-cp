@@ -58,7 +58,7 @@ class DisciplineWorkProgramRepoTarantool(AbstractRepo):
         return models_list
 
     def remove(self, id):
-        obj = self.space.delete(int(id))
+        obj = self.space.delete(id)
         if len(obj) == 0:
             return None
 
@@ -119,7 +119,11 @@ class LearningOutcomesRepoTarantool(AbstractRepo):
         raise NotImplementedError
 
     def remove(self, id):
-        raise NotImplementedError
+        obj = self.space.delete(id)
+        if len(obj) == 0:
+            return None
+
+        return obj
 
     def edit(self, *args, **kwargs):
         raise NotImplementedError
@@ -156,7 +160,11 @@ class EducationalProgramRepoTarantool(AbstractRepo):
         raise NotImplementedError
 
     def remove(self, id):
-        raise NotImplementedError
+        obj = self.space.delete(id)
+        if len(obj) == 0:
+            return None
+
+        return obj
 
     def edit(self, *args, **kwargs):
         raise NotImplementedError
@@ -212,7 +220,11 @@ class DisciplineScopeRepoTarantool(AbstractRepo):
         raise NotImplementedError
 
     def remove(self, id):
-        raise NotImplementedError
+        obj = self.space.delete(id)
+        if len(obj) == 0:
+            return None
+
+        return obj
 
     def edit(self, *args, **kwargs):
         raise NotImplementedError
@@ -271,7 +283,11 @@ class DisciplineModuleRepoTarantool(AbstractRepo):
         raise NotImplementedError
 
     def remove(self, id):
-        raise NotImplementedError
+        obj = self.space.delete(id)
+        if len(obj) == 0:
+            return None
+
+        return obj
 
     def edit(self, *args, **kwargs):
         raise NotImplementedError
@@ -318,7 +334,11 @@ class DisciplineMaterialRepoTarantool(AbstractRepo):
         raise NotImplementedError
 
     def remove(self, id):
-        raise NotImplementedError
+        obj = self.space.delete(id)
+        if len(obj) == 0:
+            return None
+
+        return obj
 
     def edit(self, *args, **kwargs):
         raise NotImplementedError

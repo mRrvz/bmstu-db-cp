@@ -3,6 +3,7 @@
 import logging
 import json
 import time
+from datetime import datetime
 
 from flask import Flask, request
 import psycopg2
@@ -55,8 +56,11 @@ def get_dpw_by_id(id=None):
     }
 
     try:
+        t1 = datetime.timestamp(datetime.now())
         model = cache.get_by_primary(int(id), "discipline_work_program", repos)
         model = Utils.collect_discipline_fields(model, int(id), cache, repos)
+        t2 = datetime.timestamp(datetime.now())
+        logging.error(f"TIME: {t2 - t1}")
     except Exception as err:
         raise err
         logging.error(err)
@@ -111,6 +115,20 @@ def clear_cache():
         return RequestHandler.error_response(500, err)
 
     return RequestHandler.success_response(message=f"Cache successfully cleared")
+
+
+@app.route("/cache/size", methods=["GET"])
+def cache_size():
+    logging.info(f"Get cache size router called")
+    cache_repos = controller.tarantool_repos
+
+    try:
+        size = cache.get_cache_size(cache_repos["discipline_work_program"].connection)
+    except Exception as err:
+        logging.error(err)
+        return RequestHandler.error_response(500, err)
+
+    return RequestHandler.success_response(message=f"Cache size is {size}")
 
 
 @app.errorhandler(404)

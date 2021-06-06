@@ -50,7 +50,7 @@ CREATE TABLE discipline_module (
     id SERIAL PRIMARY KEY,
     discipline_id INT NOT NULL,
     name VARCHAR(256) NOT NULL,
-    semested_number INT NOT NULL,
+    semester_number INT NOT NULL,
     lectures_hours INT,
     seminars_hours INT,
     laboratory_work_hours INT,

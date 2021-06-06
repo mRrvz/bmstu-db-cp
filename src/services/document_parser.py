@@ -19,7 +19,12 @@ class DocumentParser():
         return models.DisciplineWorkProgram(*fields)
 
     def learning_outcomes(self):
-        pass
+        iterator = LearningOutcomesIterator(self.document)
+        models_list = list()
+        for learning_outcomes in iterator:
+            models_list.append(models.LearningOutcomes(*([None, 0] + learning_outcomes)))
+
+        return models_list
 
     def educational_program(self):
         iterator = EducationalProgramIterator(self.document)
@@ -46,7 +51,12 @@ class DocumentParser():
         return models_list
 
     def discipline_module(self):
-        pass
+        iterator = ModuleIterator(self.document)
+        model_list = list()
+        for module in iterator:
+            model_list.append(models.DisciplineModule(*([None, 0] + module)))
+
+        return model_list
 
     def discipline_materials(self):
         iterator = MaterialIterator(self.document)
@@ -61,6 +71,8 @@ class DocumentParser():
         base_model.educational_program = self.educational_program()
         base_model.discipline_material = self.discipline_materials()
         base_model.discipline_scope = self.discipline_scope()
+        base_model.discipline_module = self.discipline_module()
+        base_model.learning_outcomes = self.learning_outcomes()
         return base_model
 
     def save(self):
@@ -239,3 +251,99 @@ class SemesterScopeIterator():
 
         return self.parse_table(0, 0)
 
+
+class ModuleIterator():
+    def __iter__(self):
+        return self
+
+    def __init__(self, document):
+        self.document = document
+        self.table = self.document.tables[4]
+        self.row_ind = 0
+        self.magic_number = 7
+        self.expected_size = 9
+        self.skip_trigger = " семестр"
+
+        for i, row in enumerate(self.table.rows):
+            for j, cell in enumerate(row.cells):
+                if "1 семестр" in cell.text.lower():
+                    self.row_ind = i + 1
+                    self.current_semester, _ = cell.text.split(' ', 1)
+                    break
+
+    def __next__(self):
+        if self.row_ind >= len(self.table.rows):
+            raise StopIteration
+
+        discipline_info = list()
+        self.row = self.table.rows[self.row_ind].cells[1:]
+
+        if self.skip_trigger in self.row[0].text.lower():
+            if self.row_ind + 2 >= len(self.table.rows):
+                raise StopIteration
+
+            self.row_ind += 2
+            self.row = self.table.rows[self.row_ind].cells[1:]
+
+        for i, cell in enumerate(self.row):
+            if i >= self.magic_number - 2 and i < self.magic_number or i in (self.magic_number + 1, self.magic_number + 2):
+                continue
+
+            if i == 1:
+                discipline_info.append(self.current_semester)
+
+            if "/" in cell.text:
+                min_score, max_score = cell.text.split('/')
+                discipline_info.extend([min_score, max_score])
+            elif cell.text != "":
+                if cell.text[-1] == '\n':
+                    discipline_info.append(cell.text[:-1])
+                elif cell.text == '-':
+                    discipline_info.append('0')
+                else:
+                    discipline_info.append(cell.text)
+
+        if len(discipline_info) != self.expected_size:
+            competency = discipline_info.pop(-1)
+            discipline_info.extend([0, 0, competency.replace('\n', ', ')])
+        else:
+            competency = discipline_info.pop(-3)
+            discipline_info.append(competency.replace('\n', ', '))
+
+        self.row_ind += 2
+        return discipline_info
+
+
+class LearningOutcomesIterator():
+    def __iter__(self):
+        return self
+
+    def __init__(self, document):
+        self.document = document
+        self.table = self.document.tables[2]
+        self.row_ind = 0
+
+        for i, row in enumerate(self.table.rows):
+            for j, cell in enumerate(row.cells):
+                if "способствующие формированию и развитию компетенции" in cell.text.lower():
+                    self.row_ind = i + 1
+                    break
+
+    def __next__(self):
+        if self.row_ind >= len(self.table.rows):
+            raise StopIteration
+
+        self.row = self.table.rows[self.row_ind].cells
+        learning_outcomes = list()
+
+        for i, cell in enumerate(self.row):
+            if i == 0:
+                index = cell.text.find(')')
+                competency = cell.text[:index + 1].replace('\n', ' ')
+                formulation = cell.text[index +2 :]
+                learning_outcomes.extend([competency, formulation])
+            else:
+                learning_outcomes.append(cell.text.replace('\n', ' ').strip())
+
+        self.row_ind += 1
+        return learning_outcomes

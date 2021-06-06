@@ -218,18 +218,20 @@ class EducationalProgramRepoPSQL(AbstractRepo):
             logging.error("Trying to save EducationalProgram object of invalid type")
             raise TypeError("Expected object is instance of EducationalProgram")
 
-        with self.connection.cursor() as cursor: # TODO
+        with self.connection.cursor() as cursor:
             try:
                 cursor.execute(
                     f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s) RETURNING id",
                         (model.id, model.name)
                 )
+
+                cursor.execute(f"INSERT INTO {self._meta['interconnection_table_name']} VALUES (%s, %s)", (model.discipline_id, model.id))
             except psycopg2.errors.UniqueViolation:
                 self.connection.commit()
                 return self.get_by_id(model.id).id
 
             self.connection.commit()
-            return cursor.fetchone()[0]
+            return model.id
 
     def get_by_id(self, model_id):
         with self.connection.cursor() as cursor:
@@ -443,9 +445,9 @@ class DisciplineModuleRepoPSQL(AbstractRepo):
             insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
                 f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES \
-                 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id", (
                     model.discipline_id, model.name, model.semester_number,
-                    model.lectures_hours, model.classroom_hours, model.seminars_hours,
+                    model.lectures_hours, model.seminars_hours,
                     model.laboratory_hours, model.independent_hours, model.min_score,
                     model.max_score, model.competency_code
                 ),

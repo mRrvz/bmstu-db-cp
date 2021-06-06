@@ -23,7 +23,6 @@ class CacheLRU():
 
         cached_object = cache_repo.get_by_id(key)
         if cached_object is not None:
-            logging.error(f"CACHED: {cached_object.__dict__}")
             insert_queue(self.time_queue, (current_time, key, space_name))
             return cached_object
 
@@ -32,7 +31,6 @@ class CacheLRU():
             cache_repo.remove(min_key)
 
         obj = storage_repo.get_by_id(key)
-        logging.error(f"NOT CACHED {obj.__dict__}")
         cache_repo.save(obj)
         insert_queue(self.time_queue, (current_time, key, space_name))
 
@@ -49,11 +47,9 @@ class CacheLRU():
         cached_objects, primary_keys = cache_repo.get_by_filter(index, key)
         if cached_objects is not None:
             for obj, primary_key in zip(cached_objects, primary_keys):
-                logging.error(f"CACHED: {obj.__dict__}")
                 insert_queue(self.time_queue, (current_time, primary_key, space_name))
 
         total_cnt = storage_repo.get_objects_count_by_filter(index, key)
-        logging.error(f"CACHE_SIZE: {self.current_size} | TOTAL TUPLES CNT: {total_cnt}, type-key {type(key)}, KEY: {key}")
         objects_left = total_cnt if cached_objects is None else total_cnt - len(cached_objects)
         if objects_left == 0:
             return cached_objects
@@ -61,16 +57,18 @@ class CacheLRU():
         if objects_left == total_cnt:
             primary_keys = [-1] # Full-scan confirmed
 
-        if self.current_size + objects_left >= self.max_size:
+        while self.current_size + objects_left >= self.max_size:
             min_key, space_name = extract_maximum(self.time_queue)[1:]
             cache_repo.remove(min_key)
+            self.decrement_cache_size(cache_repo.connection)
 
         filter_str = Utils.get_noncached_filter_string(len(primary_keys), index)
         objects, primary_keys = storage_repo.get_by_filter(filter_str, tuple(map(int, [key] + primary_keys)))
+
         for obj, primary_key in zip(objects, primary_keys):
-            logging.error(f"NOT CACHED: {obj.__dict__}")
             cache_repo.save(obj)
-            insert_queue(self.time_queue, (current_time, primary_key, space_name))
+            self.increment_cache_size(cache_repo.connection)
+            insert_queue(self.time_queue, (datetime.timestamp(datetime.now()), primary_key, space_name))
 
         return objects
 
