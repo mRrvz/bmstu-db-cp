@@ -53,7 +53,7 @@ class CacheLRU():
                 insert_queue(self.time_queue, (current_time, primary_key, space_name))
 
         total_cnt = storage_repo.get_objects_count_by_filter(index, key)
-        logging.error(f"TOTAL CNT: {total_cnt}, type-key {type(key)}, KEY: {key}")
+        logging.error(f"CACHE_SIZE: {self.current_size} | TOTAL TUPLES CNT: {total_cnt}, type-key {type(key)}, KEY: {key}")
         objects_left = total_cnt if cached_objects is None else total_cnt - len(cached_objects)
         if objects_left == 0:
             return cached_objects
@@ -72,7 +72,7 @@ class CacheLRU():
             cache_repo.save(obj)
             insert_queue(self.time_queue, (current_time, primary_key, space_name))
 
-        return obj
+        return objects
 
     def insert(self, key, obj, repo):
         current_time = datetime.timestamp(datetime.now())

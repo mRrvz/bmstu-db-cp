@@ -1,7 +1,6 @@
 """ Test API module """
 
 import requests
-import json
 import pytest
 
 from utils import default_app_url

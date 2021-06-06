@@ -16,6 +16,7 @@ from services.handler import RequestHandler
 from services.document_parser import DocumentParser
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 
 # Waiting for database initialization
 time.sleep(1)
@@ -36,6 +37,7 @@ def upload_from_file(filename=None):
         parser = DocumentParser(filename)
         model = parser.get_discipline_program()
         model.id = repo_psql.save(model)
+        model = Utils.save_discipline_fields(model, controller.psql_repos)
     except Exception as err:
         raise err
         logging.error(err)

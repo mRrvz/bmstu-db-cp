@@ -42,7 +42,7 @@ CREATE TABLE discipline_scope_semester (
     laboratory_work_hours INT NOT NULL,
     independent_work_hours INT NOT NULL,
     certification_type VARCHAR(32) NOT NULL,
-    CHECK(certification_type IN('Exam', 'Test')),
+    CHECK(certification_type IN('Зачёт', 'Экзамен', 'Зачет')),
     FOREIGN KEY (discipline_id) REFERENCES discipline_work_program(id)
 );
 

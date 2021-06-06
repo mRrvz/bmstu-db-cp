@@ -83,7 +83,6 @@ class Utils():
 
         return f"{raw_string[:-2]})"
 
-
     @staticmethod
     def get_tarantool_update_args(fields, space_format):
         value = list()
@@ -104,8 +103,22 @@ class Utils():
                 value = cache.get_by_filter(space_name, key, "discipline_id", repos)
 
             setattr(model, space_name, value)
-
             logging.error(f"OKAY: {space_name}")
+
+        return model
+
+    @staticmethod
+    def save_discipline_fields(model, repos):
+        for key in repos:
+            if key != "discipline_work_program":
+                fields = getattr(model, key)
+
+                if fields is not None:
+                    for subfield in fields:
+                        subfield.discipline_id = model.id
+                        subfield.id = repos[key].save(subfield)
+
+                    setattr(model, key, fields)
 
         return model
 

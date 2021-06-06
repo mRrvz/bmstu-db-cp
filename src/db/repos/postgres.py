@@ -114,7 +114,7 @@ class LearningOutcomesRepoPSQL(AbstractRepo):
             }
         }
 
-    def save(self):
+    def save(self, model):
         if not isinstance(model, models.LearningOutcomes):
             logging.error("Trying to save LearningOutcomes object of invalid type")
             raise TypeError("Expected object is instance of LearningOutcomes")
@@ -213,16 +213,20 @@ class EducationalProgramRepoPSQL(AbstractRepo):
             }
         }
 
-    def save(self):
-        if not isinstance(model, models.EducationalProgram(id, name)):
+    def save(self, model):
+        if not isinstance(model, models.EducationalProgram):
             logging.error("Trying to save EducationalProgram object of invalid type")
             raise TypeError("Expected object is instance of EducationalProgram")
 
         with self.connection.cursor() as cursor: # TODO
-            cursor.execute(
-                f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s) RETURNING id",
-                    (model.id, model.name)
-            )
+            try:
+                cursor.execute(
+                    f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s) RETURNING id",
+                        (model.id, model.name)
+                )
+            except psycopg2.errors.UniqueViolation:
+                self.connection.commit()
+                return self.get_by_id(model.id).id
 
             self.connection.commit()
             return cursor.fetchone()[0]
@@ -239,8 +243,6 @@ class EducationalProgramRepoPSQL(AbstractRepo):
 
     def get_by_filter(self, filter, keys):
         with self.connection.cursor() as cursor:
-            # t = f"SELECT id, name FROM {self._meta['interconnection_table_name']} JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) WHERE {filter}"
-            #logging.error(t)
             cursor.execute(f"\
                 SELECT id, name FROM {self._meta['interconnection_table_name']} \
                 JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) \
@@ -313,18 +315,23 @@ class DisciplineScopeRepoPSQL(AbstractRepo):
                 "credit_units": int,
                 "total_hours": int,
                 "lectures_hours": int,
+                "seminars_hours": int,
                 "laboratory_work_hours": int,
                 "independent_work_hours": int,
                 "certification_type": str
             }
         }
 
-    def save(self):
+    def save(self, model):
         if not isinstance(model, models.DisciplineScope):
             logging.error("Trying to save DisciplineScope object of invalid type")
             raise TypeError("Expected object is instance of DisciplineScope")
 
         with self.connection.cursor() as cursor:
+            insert_names = Utils.get_insert_fields(self._meta["field_names"])
+            a = f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES \
+                 (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id"
+            logging.error(f"ERROR: {a}")
             insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
                 f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES \
@@ -427,7 +434,7 @@ class DisciplineModuleRepoPSQL(AbstractRepo):
             }
         }
 
-    def save(self):
+    def save(self, model):
         if not isinstance(model, models.DisciplineModule):
             logging.error("Trying to save DisciplineModule object of invalid type")
             raise TypeError("Expected object is instance of DisciplineModule")
@@ -524,10 +531,10 @@ class DisciplineMaterialRepoPSQL(AbstractRepo):
         self.connection = connection
         self._meta = {
             "table_name": "discipline_material",
-            "field_names": {"id": int, "discipline_id": int, "materials": str}
+            "field_names": {"id": int, "discipline_id": int, "material": str}
         }
 
-    def save(self):
+    def save(self, model):
         if not isinstance(model, models.DisciplineMaterial):
             logging.error("Trying to save DisciplineMaterial object of invalid type")
             raise TypeError("Expected object is instance of DisciplineMaterial")
