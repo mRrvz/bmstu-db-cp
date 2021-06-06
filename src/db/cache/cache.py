@@ -29,9 +29,11 @@ class CacheLRU():
         if self.current_size >= self.max_size:
             min_key, cached_space_name = extract_maximum(self.time_queue)[1:]
             cache_repo.remove(min_key)
+            self.decrement_cache_size(cache_repo.connection)
 
         obj = storage_repo.get_by_id(key)
         cache_repo.save(obj)
+        self.increment_cache_size(cache_repo.connection)
         insert_queue(self.time_queue, (current_time, key, space_name))
 
         return obj
@@ -59,7 +61,7 @@ class CacheLRU():
 
         while self.current_size + objects_left >= self.max_size:
             min_key, space_name = extract_maximum(self.time_queue)[1:]
-            cache_repo.remove(min_key)
+            repos["cache"][space_name].remove(min_key)
             self.decrement_cache_size(cache_repo.connection)
 
         filter_str = Utils.get_noncached_filter_string(len(primary_keys), index)
@@ -86,12 +88,12 @@ class CacheLRU():
         self.increment_cache_size(repo.connection)
         repo.save(obj)
 
-    def remove(self, key, repo):
+    def remove(self, key, space_name, repo):
         if self.current_size is None:
             self.current_size = self.get_cache_size(repo.connection)
 
         if repo.remove(key) is not None:
-            self.time_queue = list(filter(lambda x: x[1] != key, self.time_queue))
+            self.time_queue = list(filter(lambda x: x[1] != key or x[2] != space_name, self.time_queue))
             self.decrement_cache_size(repo.connection)
 
     def update(self, key, repo):

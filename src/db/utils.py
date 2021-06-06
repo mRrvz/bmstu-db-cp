@@ -93,14 +93,14 @@ class Utils():
         return value
 
     @staticmethod
-    def collect_discipline_fields(model, key, cache, repos):
+    def collect_discipline_fields(model, cache, repos):
         for space_name in repos["cache"]:
             if space_name in "discipline_work_program":
                 continue
             elif space_name == "educational_program": # TODO
-                value, _ = repos["storage"][space_name].get_by_filter("discipline_id = %s", (key,))
+                value, _ = repos["storage"][space_name].get_by_filter("discipline_id = %s", (model.id,))
             else:
-                value = cache.get_by_filter(space_name, key, "discipline_id", repos)
+                value = cache.get_by_filter(space_name, model.id, "discipline_id", repos)
 
             setattr(model, space_name, value)
 
@@ -121,6 +121,21 @@ class Utils():
                     setattr(model, key, fields)
 
         return model
+
+    @staticmethod
+    def remove_discipline_fields(model, cache, repos):
+        model = Utils.collect_discipline_fields(model, cache, repos)
+
+        for key in repos["storage"]:
+            if key != "discipline_work_program":
+                fields = getattr(model, key)
+                if fields is not None:
+                    for subfield in fields:
+                        repos["storage"][key].remove(subfield.id)
+                        cache.remove(subfield.id, key, repos["cache"][key])
+
+        import logging
+        logging.error("END")
 
     @staticmethod
     def get_noncached_filter_string(primary_keys_cnt, secondary_field):

@@ -286,6 +286,7 @@ class EducationalProgramRepoPSQL(AbstractRepo):
 
     def remove(self, id):
         with self.connection.cursor() as cursor:
+            cursor.execute(f"DELETE FROM {self._meta['interconnection_table_name']} WHERE discipline_id = %s", (model.id,))
             cursor.execute(f"DELETE FROM {self._meta['table_name']} WHERE id = %s", (id,))
             if cursor.rowcount == 0:
                 raise ValueError(f"Educational program of discipline with id = {id} doesn't exists.")
@@ -330,10 +331,6 @@ class DisciplineScopeRepoPSQL(AbstractRepo):
             raise TypeError("Expected object is instance of DisciplineScope")
 
         with self.connection.cursor() as cursor:
-            insert_names = Utils.get_insert_fields(self._meta["field_names"])
-            a = f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES \
-                 (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id"
-            logging.error(f"ERROR: {a}")
             insert_names = Utils.get_insert_fields(self._meta["field_names"])
             cursor.execute(
                 f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES \

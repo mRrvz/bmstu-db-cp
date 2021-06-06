@@ -58,7 +58,7 @@ def get_dpw_by_id(id=None):
     try:
         t1 = datetime.timestamp(datetime.now())
         model = cache.get_by_primary(int(id), "discipline_work_program", repos)
-        model = Utils.collect_discipline_fields(model, int(id), cache, repos)
+        model = Utils.collect_discipline_fields(model, cache, repos)
         t2 = datetime.timestamp(datetime.now())
         logging.error(f"TIME: {t2 - t1}")
     except Exception as err:
@@ -74,11 +74,18 @@ def remove_dpw_by_id(id=None):
     logging.info(f"/dpw/{id} (DELETE) router called")
     repo_psql = controller.discipline_work_program_repo_psql
     repo_tarantool = controller.discipline_work_program_repo_tarantool
+    repos = {
+        "storage": controller.psql_repos,
+        "cache": controller.tarantool_repos,
+    }
 
     try:
-        model = repo_psql.remove(int(id))
-        cache.remove(int(id), repo_tarantool)
+        model = cache.get_by_primary(int(id), "discipline_work_program", repos)
+        Utils.remove_discipline_fields(model, cache, repos)
+        repo_psql.remove(model.id)
+        cache.remove(model.id, "discipline_work_program", repo_tarantool)
     except Exception as err:
+        raise err
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
