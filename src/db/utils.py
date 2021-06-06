@@ -134,9 +134,6 @@ class Utils():
                         repos["storage"][key].remove(subfield.id)
                         cache.remove(subfield.id, key, repos["cache"][key])
 
-        import logging
-        logging.error("END")
-
     @staticmethod
     def get_noncached_filter_string(primary_keys_cnt, secondary_field):
         primary_values = ("%s, " * primary_keys_cnt)[:-2]

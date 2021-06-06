@@ -222,13 +222,13 @@ class EducationalProgramRepoPSQL(AbstractRepo):
             try:
                 cursor.execute(
                     f"INSERT INTO {self._meta['table_name']} VALUES (%s, %s) RETURNING id",
-                        (model.id, model.name)
-                )
-
-                cursor.execute(f"INSERT INTO {self._meta['interconnection_table_name']} VALUES (%s, %s)", (model.discipline_id, model.id))
+                        (model.id, model.name))
             except psycopg2.errors.UniqueViolation:
                 self.connection.commit()
-                return self.get_by_id(model.id).id
+                model.id = self.get_by_id(model.id).id
+
+            cursor.execute(f"INSERT INTO {self._meta['interconnection_table_name']} \
+                    VALUES (%s, %s)", (model.discipline_id, model.id))
 
             self.connection.commit()
             return model.id
@@ -245,6 +245,11 @@ class EducationalProgramRepoPSQL(AbstractRepo):
 
     def get_by_filter(self, filter, keys):
         with self.connection.cursor() as cursor:
+            query = f"SELECT id, name FROM {self._meta['interconnection_table_name']} \
+                JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) \
+                WHERE {filter}"
+
+            logging.error(f"QUERY: {query}")
             cursor.execute(f"\
                 SELECT id, name FROM {self._meta['interconnection_table_name']} \
                 JOIN {self._meta['table_name']} ON (id = {self._meta['ict_field_name']}) \
@@ -258,9 +263,11 @@ class EducationalProgramRepoPSQL(AbstractRepo):
         primary_keys = list()
         for obj in orm_objects:
             model = models.EducationalProgram(*obj)
+            model.discipline_id = keys[0]
             models_list.append(model)
             primary_keys.append(model.id)
 
+        logging.error(f"LEN: {models_list}")
         return models_list, primary_keys
 
     def get_objects_count_by_filter(self, field, key):

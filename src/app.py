@@ -24,15 +24,16 @@ time.sleep(1)
 cache = CacheLRU()
 controller = Controller()
 
-@app.route("/")
-def get_index():
-    return "Index Page"
 
-
-@app.route("/dpw/<filename>", methods=["POST"])
-def upload_from_file(filename=None):
-    logging.info(f"/dpw/{filename} router called")
+@app.route("/rpd/save", methods=["POST"])
+def upload_from_file():
+    logging.info(f"/rpd/save router called")
     repo_psql = controller.discipline_work_program_repo_psql
+    logging.error(request.get_json())
+    filename = request.get_json()["filename"]
+    logging.error(filename)
+    import os
+    logging.error(os.getcwd())
 
     try:
         parser = DocumentParser(filename)
@@ -47,7 +48,7 @@ def upload_from_file(filename=None):
     return RequestHandler.success_response(data=model)
 
 
-@app.route("/dpw/<id>", methods=["GET"])
+@app.route("/rpd/<id>", methods=["GET"])
 def get_dpw_by_id(id=None):
     logging.info(f"/dpw/{id} (GET) router called")
     repos = {
@@ -57,8 +58,10 @@ def get_dpw_by_id(id=None):
 
     try:
         t1 = datetime.timestamp(datetime.now())
+
         model = cache.get_by_primary(int(id), "discipline_work_program", repos)
         model = Utils.collect_discipline_fields(model, cache, repos)
+
         t2 = datetime.timestamp(datetime.now())
         logging.error(f"TIME: {t2 - t1}")
     except Exception as err:
@@ -69,9 +72,9 @@ def get_dpw_by_id(id=None):
     return RequestHandler.success_response(data=model)
 
 
-@app.route("/dpw/<id>", methods=["DELETE"])
+@app.route("/rpd/<id>", methods=["DELETE"])
 def remove_dpw_by_id(id=None):
-    logging.info(f"/dpw/{id} (DELETE) router called")
+    logging.info(f"/rpd/{id} (DELETE) router called")
     repo_psql = controller.discipline_work_program_repo_psql
     repo_tarantool = controller.discipline_work_program_repo_tarantool
     repos = {
@@ -85,7 +88,6 @@ def remove_dpw_by_id(id=None):
         repo_psql.remove(model.id)
         cache.remove(model.id, "discipline_work_program", repo_tarantool)
     except Exception as err:
-        raise err
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
@@ -93,9 +95,9 @@ def remove_dpw_by_id(id=None):
         message=f"Work program of discipline with id = {id} successfully deleted")
 
 
-@app.route("/dpw/<id>", methods=["PUT"])
+@app.route("/rpd/<id>", methods=["PUT"])
 def edit_dpw_by_id(id=None):
-    logging.info(f"/dpw/{id} (PUT) router called")
+    logging.info(f"/rpd/{id} (PUT) router called")
     repo_psql = controller.discipline_work_program_repo_psql
     repo_tararntool = controller.discipline_work_program_repo_tarantool
 
