@@ -1,7 +1,5 @@
 """ Module to cache data via Tarantool and Time Queue """
 
-import logging
-
 from datetime import datetime
 from heapq import heappush as insert_queue, heappop as extract_maximum
 

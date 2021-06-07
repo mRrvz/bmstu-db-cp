@@ -1,7 +1,5 @@
 """ Database models """
 
-import json
-
 class DisciplineWorkProgram():
     def __init__(
         self, id, name, author, competency, learning_outcomes=None,
