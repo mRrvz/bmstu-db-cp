@@ -17,7 +17,7 @@ class DisciplineWorkProgram():
         self.competency = competency
         self.learning_outcomes = learning_outcomes
         self.educational_program = educational_program
-        self.discipline_scope = scope
+        self.discipline_scope_semester = scope
         self.discipline_module = module
         self.discipline_material = material
 

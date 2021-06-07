@@ -40,7 +40,7 @@ def upload_from_file():
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
-    return RequestHandler.success_response(data=model)
+    return RequestHandler.success_response(message=f"RPD successfully added! RPD id is {model.id}")
 
 
 @app.route("/rpd/<id>", methods=["GET"])
@@ -52,14 +52,18 @@ def get_dpw_by_id(id=None):
     }
 
     try:
-        t1 = datetime.timestamp(datetime.now())
+        full_delta = 0
+        for i in range(1, 2):
+            t1 = datetime.now()
+            model = cache.get_by_primary(int(i), "discipline_work_program", repos)
+            model = Utils.collect_discipline_fields(model, cache, repos)
+            t2 = datetime.now()
+            delta = t2 - t1
+            full_delta += delta.microseconds
 
-        model = cache.get_by_primary(int(id), "discipline_work_program", repos)
-        model = Utils.collect_discipline_fields(model, cache, repos)
-
-        t2 = datetime.timestamp(datetime.now())
-        logging.error(f"TIME: {t2 - t1}")
+        logging.error(f"Delta (ms): {full_delta}")
     except Exception as err:
+        raise
         logging.error(err)
         return RequestHandler.error_response(500, err)
 

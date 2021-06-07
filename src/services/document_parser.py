@@ -70,7 +70,7 @@ class DocumentParser():
         base_model = self.discipline_base()
         base_model.educational_program = self.educational_program()
         base_model.discipline_material = self.discipline_materials()
-        base_model.discipline_scope = self.discipline_scope()
+        base_model.discipline_scope_semester = self.discipline_scope()
         base_model.discipline_module = self.discipline_module()
         base_model.learning_outcomes = self.learning_outcomes()
         return base_model
