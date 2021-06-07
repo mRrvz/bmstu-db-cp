@@ -1,0 +1,167 @@
+\begin{thebibliography}{10}
+\def\selectlanguageifdefined#1{
+\expandafter\ifx\csname date#1\endcsname\relax
+\else\language\csname l@#1\endcsname\fi}
+\ifx\undefined\url\def\url#1{{\small #1}}\else\fi
+\ifx\undefined\BibUrl\def\BibUrl#1{\url{#1}}\else\fi
+\ifx\undefined\BibAnnote\long\def\BibAnnote#1{(#1)}\else\fi
+\ifx\undefined\BibEmph\def\BibEmph#1{\emph{#1}}\else\fi
+
+\bibitem{rpd-about}
+\selectlanguageifdefined{russian}
+Положение о порядке разработки и
+  утверждение рабочей программы дисциплины
+  [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.volgmed.ru/uploads/files/2010-11/1180-polozhenie_o_poryadke_razrabotki_i_utverzhdeniya_rabochej_programmy_uchebnoj_discipliny_(kursa).doc}
+  (дата обращения: 07.06.2021).
+
+\bibitem{lms}
+\selectlanguageifdefined{russian}
+Learning Management System (LMS) — HSE [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.hse.ru/en/studyspravka/lms_student/} (дата
+  обращения: 07.06.2021).
+
+\bibitem{ms-word}
+\selectlanguageifdefined{russian}
+Microsoft Word - Word Processing Software | Microsoft 365
+  [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.microsoft.com/en-us/microsoft-365/word} (дата
+  обращения: 07.06.2021).
+
+\bibitem{rest-api}
+\selectlanguageifdefined{russian}
+What is a REST API? - Red Hat [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.redhat.com/en/topics/api/what-is-a-rest-api} (дата
+  обращения: 07.06.2021).
+
+\bibitem{standard}
+\selectlanguageifdefined{russian}
+Образовательные стандарты | МГТУ им. Н. Э.
+  Баумана [Электронный ресурс].
+\newblock Режим доступа: \url{https://bmstu.ru/plain/eduStandarts/}
+  (дата обращения: 07.06.2021).
+
+\bibitem{bmstu}
+\selectlanguageifdefined{russian}
+МГТУ им. Н. Э. Баумана -- Официальный сайт
+  [Электронный ресурс].
+\newblock Режим доступа: \url{https://bmstu.ru/} (дата
+  обращения: 07.06.2021).
+
+\bibitem{database}
+\selectlanguageifdefined{russian}
+Что такое база данных | Oracle Россия и СНГ
+  [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.oracle.com/ru/database/what-is-database/} (дата
+  обращения: 07.06.2021).
+
+\bibitem{subd}
+\selectlanguageifdefined{russian}
+Что такое СУБД - RU-CENTER [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.nic.ru/help/chto-takoe-subd_8580.html} (дата
+  обращения: 07.06.2021).
+
+\bibitem{microservice}
+\selectlanguageifdefined{russian}
+Что такое микросервисная архитектура:
+  простое объяснение | MCS Mail.ru [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://mcs.mail.ru/blog/prostym-jazykom-o-mikroservisnoj-arhitekture}
+  (дата обращения: 07.06.2021).
+
+\bibitem{race-condition}
+\selectlanguageifdefined{russian}
+Race conditions and deadlocks - Microsoft Docs [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://docs.microsoft.com/en-us/troubleshoot/dotnet/visual-basic/race-conditions-deadlocks}
+  (дата обращения: 07.06.2021).
+
+\bibitem{OLTP}
+\selectlanguageifdefined{russian}
+What is OLTP? | IBM [Электронный ресурс].
+\newblock Режим доступа: \url{https://www.ibm.com/cloud/learn/oltp}
+  (дата обращения: 07.06.2021).
+
+\bibitem{olap}
+\selectlanguageifdefined{russian}
+What is OLAP? | IBM [Электронный ресурс].
+\newblock Режим доступа: \url{https://www.ibm.com/cloud/learn/olap}
+  (дата обращения: 07.06.2021).
+
+\bibitem{postgresql}
+\selectlanguageifdefined{russian}
+PostgreSQL: Документация. [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://postgrespro.ru/docs/postgresql/} (дата обращения:
+  07.06.2021).
+
+\bibitem{postgresql-fact}
+\selectlanguageifdefined{russian}
+PostgreSQL: вчера, сегодня, завтра [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://postgrespro.ru/blog/media/17768} (дата обращения:
+  07.06.2021).
+
+\bibitem{acid}
+\selectlanguageifdefined{russian}
+Транзакции, ACID, CAP | GeekBrains [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://gb.ru/posts/acid_cap_transactions} (дата обращения:
+  07.06.2021).
+
+\bibitem{mvcc}
+\selectlanguageifdefined{russian}
+Documentation: 12: 13.1. Introduction - PostgreSQL [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://www.postgresql.org/docs/12/mvcc-intro.html} (дата
+  обращения: 07.06.2021).
+
+\bibitem{r-lock}
+\selectlanguageifdefined{russian}
+Применение блокировок чтения/записи | IBM
+  [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.ibm.com/docs/ru/aix/7.2?topic=programming-using-readwrite-locks}
+  (дата обращения: 07.06.2021).
+
+\bibitem{oracle}
+\selectlanguageifdefined{russian}
+SQL Language | Oracle[Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.oracle.com/database/technologies/appdev/sql.html} (дата
+  обращения: 07.06.2021).
+
+\bibitem{mysql}
+\selectlanguageifdefined{russian}
+MySQL Database Service is a fully managed database service to deploy
+  cloud-native applications. [Электронный ресурс].
+\newblock Режим доступа: \url{https://www.mysql.com/} (дата
+  обращения: 07.06.2021).
+
+\bibitem{plpython3u}
+\selectlanguageifdefined{russian}
+PostgreSQL: Документация: 9.6: 44.1. Python 2 и Python 3.
+  [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://postgrespro.ru/docs/postgresql/9.6/plpython-python23} (дата
+  обращения: 07.06.2021).
+
+\bibitem{lru}
+\selectlanguageifdefined{russian}
+LRU, метод вытеснения из кэша | Habr
+  [Электронный ресурс].
+\newblock Режим доступа: \url{https://habr.com/ru/post/136758/}
+  (дата обращения: 07.06.2021).
+
+\end{thebibliography}
