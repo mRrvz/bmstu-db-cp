@@ -200,10 +200,9 @@ PostgreSQL: Документация: 9.6: 44.1. Python 2 и Python 3.
 
 \bibitem{nosql}
 \selectlanguageifdefined{russian}
-NoSQL базы данных: понимаем суть / Хабр
-  [Электронный ресурс].
-\newblock Режим доступа: \url{Что такое NoSQL? | Amazon
-  AWS} (дата обращения: 07.06.2021).
+Что такое NoSQL? | Amazon AWS [Электронный ресурс].
+\newblock Режим доступа: \url{https://aws.amazon.com/ru/nosql/}
+  (дата обращения: 07.06.2021).
 
 \bibitem{tarantool}
 \selectlanguageifdefined{russian}
@@ -254,6 +253,49 @@ Redis is an open source (BSD licensed), in-memory data structure store, used as
 LRU, метод вытеснения из кэша | Habr
   [Электронный ресурс].
 \newblock Режим доступа: \url{https://habr.com/ru/post/136758/}
+  (дата обращения: 07.06.2021).
+
+\bibitem{python}
+\selectlanguageifdefined{russian}
+The official home of the Python Programming Language. [Электронный
+  ресурс].
+\newblock Режим доступа: \url{https://www.python.org/} (дата
+  обращения: 07.06.2021).
+
+\bibitem{flask}
+\selectlanguageifdefined{russian}
+Welcome to Flask — Flask Documentation (2.0.x) [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://flask.palletsprojects.com/en/2.0.x/} (дата
+  обращения: 07.06.2021).
+
+\bibitem{python-tarantool}
+\selectlanguageifdefined{russian}
+Python driver for Tarantool - GitHub [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://github.com/tarantool/tarantool-python} (дата
+  обращения: 07.06.2021).
+
+\bibitem{psycopg2}
+\selectlanguageifdefined{russian}
+Psycopg – PostgreSQL database adapter for Python [Электронный
+  ресурс].
+\newblock Режим доступа: \url{https://www.psycopg.org/docs/}
+  (дата обращения: 07.06.2021).
+
+\bibitem{docker}
+\selectlanguageifdefined{russian}
+Docker: Empowering App Development for Developers [Электронный
+  ресурс].
+\newblock Режим доступа: \url{https://www.docker.com/} (дата
+  обращения: 07.06.2021).
+
+\bibitem{pytest}
+\selectlanguageifdefined{russian}
+pytest: helps you write better programs — pytest documentation
+  [Электронный ресурс].
+\newblock Режим доступа: \url{https://docs.pytest.org/en/6.2.x/}
   (дата обращения: 07.06.2021).
 
 \end{thebibliography}

@@ -2,7 +2,6 @@
 
 import psycopg2
 import tarantool
-import logging
 
 class PostgresConnection():
     def __init__(self, dbname, user, password, host):
