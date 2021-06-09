@@ -6,7 +6,7 @@ from heapq import heappush as insert_queue, heappop as extract_maximum
 from db.utils import Utils
 
 class CacheLRU():
-    def __init__(self, max_size=100):
+    def __init__(self, max_size=5000):
         self.max_size = max_size
         self.current_size = None
         self.time_queue = []
