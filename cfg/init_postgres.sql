@@ -87,32 +87,48 @@ AS $$
     )
 $$ LANGUAGE PLPYTHON3U;
 
+CREATE OR REPLACE FUNCTION update_cache_py()
+RETURNS TRIGGER
+AS $$
+    import requests
+    import json
+
+    url = f'http://rpd-app:5000/cache'
+    data = {TD["table_name"]: TD["new"]}
+    headers = {'content-type': 'application/json'}
+    response = requests.put(
+        url,
+        data=json.dumps(data),
+        headers=headers,
+    )
+$$ LANGUAGE PLPYTHON3U;
+
 CREATE TRIGGER remove_from_cache_dwp_delete AFTER DELETE ON discipline_work_program
 FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
 
 CREATE TRIGGER remove_from_cache_dwp_update AFTER UPDATE ON discipline_work_program
-FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+FOR EACH ROW EXECUTE PROCEDURE update_cache_py();
 
 CREATE TRIGGER remove_from_cache_lo_delete AFTER DELETE ON learning_outcomes
 FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
 
 CREATE TRIGGER remove_from_cache_lo_update AFTER UPDATE ON learning_outcomes
-FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+FOR EACH ROW EXECUTE PROCEDURE update_cache_py();
 
 CREATE TRIGGER remove_from_cache_dss_delete AFTER DELETE ON discipline_scope_semester
 FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
 
 CREATE TRIGGER remove_from_cache_dss_update AFTER UPDATE ON discipline_scope_semester
-FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+FOR EACH ROW EXECUTE PROCEDURE update_cache_py();
 
 CREATE TRIGGER remove_from_cache_dm_delete AFTER DELETE ON discipline_module
 FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
 
 CREATE TRIGGER remove_from_cache_dm_update AFTER UPDATE ON discipline_module
-FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+FOR EACH ROW EXECUTE PROCEDURE update_cache_py();
 
 CREATE TRIGGER remove_from_cache_dmat_delete AFTER DELETE ON discipline_material
 FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
 
 CREATE TRIGGER remove_from_cache_dmat_update AFTER UPDATE ON discipline_material
-FOR EACH ROW EXECUTE PROCEDURE remove_from_cache_py();
+FOR EACH ROW EXECUTE PROCEDURE update_cache_py();

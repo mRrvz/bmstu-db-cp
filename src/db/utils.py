@@ -83,15 +83,6 @@ class Utils():
         return f"{raw_string[:-2]})"
 
     @staticmethod
-    def get_tarantool_update_args(fields, space_format):
-        value = list()
-        for key in fields:
-            index = space_format[key]
-            values.append(('=', index, args[key]))
-
-        return value
-
-    @staticmethod
     def collect_discipline_fields(model, cache, repos):
         for space_name in repos["cache"]:
             if space_name in "discipline_work_program":

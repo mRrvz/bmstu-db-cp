@@ -37,6 +37,7 @@ class CacheLRU():
         return obj
 
     def get_by_filter(self, space_name, key, index, repos):
+        import logging
         current_time = datetime.timestamp(datetime.now())
         cache_repo = repos["cache"][space_name]
         storage_repo = repos["storage"][space_name]
@@ -47,6 +48,7 @@ class CacheLRU():
         cached_objects, primary_keys = cache_repo.get_by_filter(index, key)
         if cached_objects is not None:
             for obj, primary_key in zip(cached_objects, primary_keys):
+                logging.error(f"CACHED: {obj.__dict__}")
                 insert_queue(self.time_queue, (current_time, primary_key, space_name))
 
         total_cnt = storage_repo.get_objects_count_by_filter(index, key)

@@ -93,7 +93,7 @@ class DisciplineWorkProgramRepoPSQL(AbstractRepo):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 f"UPDATE {self._meta['table_name']} SET {updated_args_str} WHERE id = %s",
-                (updated_args, *obj_id,)
+                (*updated_args, obj_id,)
             )
 
             self.connection.commit()
@@ -194,7 +194,7 @@ class LearningOutcomesRepoPSQL(AbstractRepo):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 f"UPDATE {self._meta['table_name']} SET {updated_args_str} WHERE id = %s",
-                (updated_args, *obj_id,)
+                (*updated_args, obj_id,)
             )
 
             self.connection.commit()
@@ -304,7 +304,7 @@ class EducationalProgramRepoPSQL(AbstractRepo):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 f"UPDATE {self._meta['table_name']} SET {updated_args_str} WHERE id = %s",
-                (updated_args, *obj_id,)
+                (*updated_args, obj_id,)
             )
 
             self.connection.commit()
@@ -411,7 +411,7 @@ class DisciplineScopeRepoPSQL(AbstractRepo):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 f"UPDATE {self._meta['table_name']} SET {updated_args_str} WHERE id = %s",
-                (updated_args, *obj_id,)
+                (*updated_args, obj_id,)
             )
 
             self.connection.commit()
@@ -523,7 +523,7 @@ class DisciplineModuleRepoPSQL(AbstractRepo):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 f"UPDATE {self._meta['table_name']} SET {updated_args_str} WHERE id = %s",
-                (updated_args, *obj_id,)
+                (*updated_args, obj_id,)
             )
 
             self.connection.commit()
@@ -619,7 +619,7 @@ class DisciplineMaterialRepoPSQL(AbstractRepo):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 f"UPDATE {self._meta['table_name']} SET {updated_args_str} WHERE id = %s",
-                (updated_args, *obj_id,)
+                (*updated_args, obj_id,)
             )
 
             self.connection.commit()

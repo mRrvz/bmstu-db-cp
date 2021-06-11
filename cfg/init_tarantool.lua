@@ -1,4 +1,5 @@
 box.cfg{}
+require('log').info('IAMHUSSTLE')
 box.schema.user.passwd('pass')
 
 -- Cache size

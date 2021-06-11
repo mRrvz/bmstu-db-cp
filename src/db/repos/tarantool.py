@@ -65,10 +65,7 @@ class DisciplineWorkProgramRepoTarantool(AbstractRepo):
         return obj
 
     def edit(self, *args, **kwargs):
-        obj_id = kwargs['id']
-        updated_args = Utils.get_tarantool_update_args(kwargs['fields'], self._meta['field_names'])
-
-        return self.space.update(obj_id, updated_args)[0]
+        return self.space.replace((kwargs['id'],) + tuple(kwargs['fields'].values()))
 
 
 class LearningOutcomesRepoTarantool(AbstractRepo):
@@ -126,7 +123,7 @@ class LearningOutcomesRepoTarantool(AbstractRepo):
         return obj
 
     def edit(self, *args, **kwargs):
-        raise NotImplementedError
+        return self.space.replace((kwargs['id'],) + tuple(kwargs['fields'].values()))
 
 
 class EducationalProgramRepoTarantool(AbstractRepo):
@@ -168,6 +165,7 @@ class EducationalProgramRepoTarantool(AbstractRepo):
 
     def edit(self, *args, **kwargs):
         raise NotImplementedError
+
 
 class DisciplineScopeRepoTarantool(AbstractRepo):
     def __init__(self, connection):
@@ -227,7 +225,7 @@ class DisciplineScopeRepoTarantool(AbstractRepo):
         return obj
 
     def edit(self, *args, **kwargs):
-        raise NotImplementedError
+        return self.space.replace((kwargs['id'],) + tuple(kwargs['fields'].values()))
 
 
 class DisciplineModuleRepoTarantool(AbstractRepo):
@@ -290,7 +288,7 @@ class DisciplineModuleRepoTarantool(AbstractRepo):
         return obj
 
     def edit(self, *args, **kwargs):
-        raise NotImplementedError
+        return self.space.replace((kwargs['id'],) + tuple(kwargs['fields'].values()))
 
 
 class DisciplineMaterialRepoTarantool(AbstractRepo):
@@ -341,4 +339,4 @@ class DisciplineMaterialRepoTarantool(AbstractRepo):
         return obj
 
     def edit(self, *args, **kwargs):
-        raise NotImplementedError
+        return self.space.replace((kwargs['id'],) + tuple(kwargs['fields'].values()))

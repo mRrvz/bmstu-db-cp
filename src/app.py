@@ -44,7 +44,7 @@ def upload_from_file():
 
 
 @app.route("/rpd/<id>", methods=["GET"])
-def get_dpw_by_id(id=None):
+def get_rpd_by_id(id=None):
     logging.info(f"/dpw/{id} (GET) router called")
     repos = {
         "storage": controller.psql_repos,
@@ -52,16 +52,13 @@ def get_dpw_by_id(id=None):
     }
 
     try:
-        full_delta = 0
-        for i in range(1, 2):
-            t1 = datetime.now()
-            model = cache.get_by_primary(int(i), "discipline_work_program", repos)
-            model = Utils.collect_discipline_fields(model, cache, repos)
-            t2 = datetime.now()
-            delta = t2 - t1
-            full_delta += delta.microseconds
+        t1 = datetime.now()
+        model = cache.get_by_primary(int(id), "discipline_work_program", repos)
+        model = Utils.collect_discipline_fields(model, cache, repos)
+        t2 = datetime.now()
+        delta = t2 - t1
 
-        logging.error(f"Delta (ms): {full_delta}")
+        logging.error(f"Delta (ms): {delta.microseconds}")
     except Exception as err:
         raise
         logging.error(err)
@@ -71,7 +68,7 @@ def get_dpw_by_id(id=None):
 
 
 @app.route("/rpd/<id>", methods=["DELETE"])
-def remove_dpw_by_id(id=None):
+def remove_rpd_by_id(id=None):
     logging.info(f"/rpd/{id} (DELETE) router called")
     repo_psql = controller.discipline_work_program_repo_psql
     repo_tarantool = controller.discipline_work_program_repo_tarantool
@@ -92,20 +89,25 @@ def remove_dpw_by_id(id=None):
         message=f"Work program of discipline with id = {id} successfully deleted")
 
 
-@app.route("/rpd/<id>", methods=["PUT"])
-def edit_dpw_by_id(id=None):
-    logging.info(f"/rpd/{id} (PUT) router called")
-    repo_psql = controller.discipline_work_program_repo_psql
-    repo_tararntool = controller.discipline_work_program_repo_tarantool
+@app.route("/rpd", methods=["PUT"])
+def edit_rpd_by_id():
+    logging.info(f"/rpd (PUT) router called")
+    repos = controller.psql_repos
 
     try:
-        model = repo_psql.edit(id=int(id), fields=request.get_json())
+        model_fields = request.get_json()
+        for field in model_fields:
+            field_id = model_fields[field]["id"]
+            obj = model_fields[field]
+            obj.pop("id")
+            repos[field].edit(id=int(field_id), fields=obj)
     except Exception as err:
+        raise err
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
     return RequestHandler.success_response(
-        message=f"Work program of discipline with id = {id} successfully changed")
+        message=f"Work program of discipline successfully changed")
 
 
 @app.route("/cache/clear", methods=["PUT"])
@@ -148,6 +150,28 @@ def remove_from_cache(id=None):
         return RequestHandler.error_response(500, err)
 
     return RequestHandler.success_response(message=f"Cache successfully cleared")
+
+
+@app.route("/cache", methods=["PUT"])
+def edit_cache_by_id():
+    logging.info(f"/cache (PUT) router called")
+    repos = controller.tarantool_repos
+
+    try:
+        model_fields = request.get_json()
+        for field in model_fields:
+            field_id = model_fields[field]["id"]
+            obj = model_fields[field]
+            obj.pop("id")
+
+            repos[field].edit(id=int(field_id), fields=obj)
+    except Exception as err:
+        raise err
+        logging.error(err)
+        return RequestHandler.error_response(500, err)
+
+    return RequestHandler.success_response(
+        message=f"Work program of discipline successfully changed")
 
 
 @app.errorhandler(404)
