@@ -20,14 +20,14 @@
 
 \subsection{Результат эксперимента}
 
-В таблицах \ref{tbl:experiment1} - \ref{tbl:experiment3} представлены результаты поставленного эксперимента.
+В таблицах \ref{tbl:experiment1} - \ref{tbl:experiment3} представлены результаты поставленного эксперимента. 
 
 \begin{table}[H]
 	\centering
 	\caption{Результаты сравнения времени, необходимого для получениях данных без кэширования и с кэшированием (размер кэша - 100 единиц)}
 	\label{tbl:experiment1}
 	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{|c|c|c|}
+		\begin{tabular}{|l|l|l|}
 			\hline
 			\textbf{\begin{tabular}[c]{@{}c@{}}Количество \\ РПД\end{tabular}} & \textbf{Время без кэширования, мс} & \textbf{Время с кэшированием, мс} \\ \hline
 			1 & 62012 & 4554 \\ \hline
@@ -44,7 +44,7 @@
 	\caption{Результаты сравнения времени, необходимого для получениях данных без кэширования и с кэшированием (размер кэша - 1000 единиц)}
 	\label{tbl:experiment2}
 	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{|c|c|c|}
+		\begin{tabular}{|l|l|l|}
 			\hline
 			\textbf{\begin{tabular}[c]{@{}c@{}}Количество \\ РПД\end{tabular}} & \textbf{Время без кэширования, мс} & \textbf{Время с кэшированием, мс} \\ \hline
 			1 & 70233 & 4301 \\ \hline
@@ -61,7 +61,7 @@
 	\caption{Результаты сравнения времени, необходимого для получениях данных без кэширования и с кэшированием (размер кэша - 5000 единиц)}
 	\label{tbl:experiment3}
 	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{|c|c|c|}
+		\begin{tabular}{|l|l|l|}
 			\hline
 			\textbf{\begin{tabular}[c]{@{}c@{}}Количество \\ РПД\end{tabular}} & \textbf{Время без кэширования, мс} & \textbf{Время с кэшированием, мс} \\ \hline
 			1 & 90213 & 6521 \\ \hline
@@ -72,6 +72,68 @@
 		\end{tabular}%
 	}
 \end{table}
+
+На рисунках \ref{plt:experiment1} - \ref{plt:experiment3} представлены графики зависимости количество запрашиваемых РПД от времени, при разных размерах кэша.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	axis lines=left,
+	xlabel=Количество запрашиваемых РПД,
+	ylabel={Время, мс},
+	legend pos=north west,
+	ymajorgrids=true
+	]
+	\addplot table[x=RPD,y=ms,col sep=comma]{csv/cache_01.csv};
+	\addplot table[x=RPD,y=ms,col sep=comma]{csv/storage_01.csv};
+	\legend{С кэшированием, Без кэширования}
+	\end{axis}
+	\end{tikzpicture}
+	\captionsetup{justification=centering}
+	\caption{Зависимость времени от количества запрашиваемых РПД (размера кэша 100 элементов)}
+	\label{plt:experiment1}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	axis lines=left,
+	xlabel=Количество запрашиваемых РПД,
+	ylabel={Время, мс},
+	legend pos=north west,
+	ymajorgrids=true
+	]
+	\addplot table[x=RPD,y=ms,col sep=comma]{csv/cache_02.csv};
+	\addplot table[x=RPD,y=ms,col sep=comma]{csv/storage_02.csv};
+	\legend{С кэшированием, Без кэширования}
+	\end{axis}
+	\end{tikzpicture}
+	\captionsetup{justification=centering}
+	\caption{Зависимость времени от количества запрашиваемых РПД (размера кэша 1000 элементов)}
+	\label{plt:experiment2}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	axis lines=left,
+	xlabel=Количество запрашиваемых РПД,
+	ylabel={Время, мс},
+	legend pos=north west,
+	ymajorgrids=true
+	]
+	\addplot table[x=RPD,y=ms,col sep=comma]{csv/cache_03.csv};
+	\addplot table[x=RPD,y=ms,col sep=comma]{csv/storage_03.csv};
+	\legend{С кэшированием, Без кэширования}
+	\end{axis}
+	\end{tikzpicture}
+	\captionsetup{justification=centering}
+	\caption{Зависимость времени от количества запрашиваемых РПД (размера кэша 5000 элементов)}
+	\label{plt:experiment3}
+\end{figure}
 
 \section*{Вывод}
 
