@@ -60,7 +60,6 @@ def get_rpd_by_id(id=None):
 
         logging.error(f"Delta (ms): {delta.microseconds}")
     except Exception as err:
-        raise
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
@@ -102,7 +101,6 @@ def edit_rpd_by_id():
             obj.pop("id")
             repos[field].edit(id=int(field_id), fields=obj)
     except Exception as err:
-        raise err
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
@@ -166,7 +164,6 @@ def edit_cache_by_id():
 
             repos[field].edit(id=int(field_id), fields=obj)
     except Exception as err:
-        raise err
         logging.error(err)
         return RequestHandler.error_response(500, err)
 
