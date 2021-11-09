@@ -77,7 +77,7 @@ AS $$
     import requests
     import json
 
-    url = f'http://rpd-app:5000/cache/{ + TD["old"]["id"]}'
+    url = f'http://rpd-app:5000/api/v1/cache/{TD["old"]["id"]}'
     data = {'space_name': TD["table_name"]}
     headers = {'content-type': 'application/json'}
     response = requests.delete(
@@ -93,10 +93,10 @@ AS $$
     import requests
     import json
 
-    url = f'http://rpd-app:5000/cache'
+    url = f'http://rpd-app:5000/api/v1/cache{TD["old"]["id"]'
     data = {TD["table_name"]: TD["new"]}
     headers = {'content-type': 'application/json'}
-    response = requests.put(
+    response = requests.patch(
         url,
         data=json.dumps(data),
         headers=headers,

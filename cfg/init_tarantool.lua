@@ -1,6 +1,7 @@
 box.cfg{}
-require('log').info('IAMHUSSTLE')
 box.schema.user.passwd('pass')
+box.schema.user.create('alexey', { password = 'pass', if_not_exists = true })
+box.schema.user.grant('alexey', 'read,write,execute,session,usage,create,drop,alter,reference,trigger,insert,update,delete', 'universe', nil, { if_not_exists = true })
 
 -- Cache size
 cache_size_space = box.schema.space.create('cache_size')
