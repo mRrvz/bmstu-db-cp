@@ -1,16 +1,14 @@
-import logging 
+import logging
 
-import flask 
+from flask import request
 import flask_restplus
 
 import db.models as m
 from db.cache.cache import CacheLRU
-
-from services.controller import Controller
-from services.handler import RequestHandler
-from services.document_parser import DocumentParser
-
 from db.utils import Utils
+from services.controller import Controller
+from services.document_parser import DocumentParser
+from services.handler import RequestHandler
 
 namespace = flask_restplus.Namespace("rpd", "RPD management: changing, deleting and loading information from the file.", path="/")
 

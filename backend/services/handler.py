@@ -2,6 +2,7 @@
 
 from flask import jsonify
 
+
 class RequestHandler():
     @staticmethod
     def success_response(data=None, message=None):

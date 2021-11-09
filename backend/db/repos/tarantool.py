@@ -1,9 +1,11 @@
 """ Tarantool repos """
 
 import logging
-from db.utils import Utils
-from db.repos.abstract import AbstractRepo
+
 import db.models as models
+from db.repos.abstract import AbstractRepo
+from db.utils import Utils
+
 
 class DisciplineWorkProgramRepoTarantool(AbstractRepo):
     def __init__(self, connection):

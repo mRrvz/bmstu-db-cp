@@ -6,6 +6,7 @@ from db.repos.postgres import *
 from db.repos.tarantool import *
 from db.utils import PostgresConnection, TarantoolConnection
 
+
 class Controller():
     def __init__(self):
         self.postgres_conn = PostgresConnection(

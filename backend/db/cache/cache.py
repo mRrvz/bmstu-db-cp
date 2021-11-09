@@ -1,9 +1,11 @@
 """ Module to cache data via Tarantool and Time Queue """
 
 from datetime import datetime
-from heapq import heappush as insert_queue, heappop as extract_maximum
+from heapq import heappop as extract_maximum
+from heapq import heappush as insert_queue
 
 from db.utils import Utils
+
 
 class CacheLRU():
     def __init__(self, max_size=5000):

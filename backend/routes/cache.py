@@ -1,11 +1,10 @@
-import logging 
+import logging
 
-import flask 
+import flask
 import flask_restplus
 
+from routes.rpd import cache, controller
 from services.handler import RequestHandler
-
-from routes.rpd import controller, cache
 
 namespace = flask_restplus.Namespace("cache", "Information about the cache and its management.", path="/")
 

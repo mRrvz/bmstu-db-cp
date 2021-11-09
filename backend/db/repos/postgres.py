@@ -1,11 +1,13 @@
 """ PostrgreSQL repos """
 
 import logging
+
 import psycopg2
 
-from db.utils import Utils
-from db.repos.abstract import AbstractRepo
 import db.models as models
+from db.repos.abstract import AbstractRepo
+from db.utils import Utils
+
 
 class DisciplineWorkProgramRepoPSQL(AbstractRepo):
     def __init__(self, connection):

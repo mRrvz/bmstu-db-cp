@@ -3,6 +3,7 @@
 import psycopg2
 import tarantool
 
+
 class PostgresConnection():
     def __init__(self, dbname, user, password, host):
         self.dbname = dbname

@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 
+
 class AbstractRepo(ABC):
     @abstractmethod
     def save(self, model):

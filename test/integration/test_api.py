@@ -1,8 +1,9 @@
 """ Test API module """
 
-import requests
 import json
+
 import pytest
+import requests
 
 default_app_url = "http://0.0.0.0:5000"
 
@@ -22,7 +23,6 @@ def test_remove(clear_cache):
 
 
 def test_save(clear_cache):
-    return
     url = f"{default_app_url}/api/v1/rpd"
     data = json.dumps({"filename": "/files/rpd_example_01.docx"})
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}

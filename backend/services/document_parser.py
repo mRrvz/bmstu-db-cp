@@ -1,9 +1,11 @@
 """ """
 
 import os
+
 import docx
 
 import db.models as models
+
 
 class DocumentParser():
     def __init__(self, filename):
