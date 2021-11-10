@@ -122,3 +122,14 @@ class DisciplineMaterial():
 
     def serialize(self):
         return self.__dict__
+
+
+class User():
+    def __init__(self, username, password, email, status):
+        self.username = username
+        self.password = password
+        self.email = email
+        self.status = status
+
+    def serialize(self):
+        return self.__dict__

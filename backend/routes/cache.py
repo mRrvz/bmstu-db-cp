@@ -2,7 +2,6 @@ import logging
 
 import flask
 import flask_restplus
-
 from routes.rpd import cache, controller
 from services.handler import RequestHandler
 

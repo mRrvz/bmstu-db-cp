@@ -2,9 +2,8 @@
 
 import os
 
-import docx
-
 import db.models as models
+import docx
 
 
 class DocumentParser():

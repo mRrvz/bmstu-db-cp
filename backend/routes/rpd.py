@@ -1,11 +1,10 @@
 import logging
 
-from flask import request
-import flask_restplus
-
 import db.models as m
+import flask_restplus
 from db.cache.cache import CacheLRU
 from db.utils import Utils
+from flask import request
 from services.controller import Controller
 from services.document_parser import DocumentParser
 from services.handler import RequestHandler
@@ -26,7 +25,7 @@ class LoadRpd(flask_restplus.Resource):
 
     @namespace.produces("application/json")
     def post(self):
-        logging.info(f"/rpd router called")
+        logging.info("/rpd router called")
         repo_psql = controller.discipline_work_program_repo_psql
         filename = request.get_json()["filename"]
 

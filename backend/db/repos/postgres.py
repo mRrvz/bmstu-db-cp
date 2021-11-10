@@ -2,9 +2,8 @@
 
 import logging
 
-import psycopg2
-
 import db.models as models
+import psycopg2
 from db.repos.abstract import AbstractRepo
 from db.utils import Utils
 
@@ -625,3 +624,65 @@ class DisciplineMaterialRepoPSQL(AbstractRepo):
             )
 
             self.connection.commit()
+
+
+class UserRepoPSQL(AbstractRepo):
+    def __init__(self, connection):
+        self.connection = connection
+        self._meta = {
+            "table_name": "userdb",
+            "field_names": {"username": str, "password": str, "email": str, "status": str}
+        }
+
+    def save(self, model):
+        if not isinstance(model, models.User):
+            logging.error("Trying to save User object of invalid type")
+            raise TypeError("Expected object is instance of User")
+
+        with self.connection.cursor() as cursor:
+            insert_names = Utils.get_insert_fields(self._meta["field_names"])
+            cursor.execute(
+                f"INSERT INTO {self._meta['table_name']} {insert_names} VALUES (%s, %s, %s, %s)",
+                (model.username, model.password, model.email, model.status),
+            )
+
+            self.connection.commit()
+
+    def get_by_id(self, username):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM {self._meta['table_name']} WHERE username = %s", (username,))
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                raise ValueError(f"User with id = {username} doesn't exists")
+
+        return models.DisciplineMaterial(*orm_objects[0])
+
+    def get_by_filter(self, filter, keys):
+        raise NotImplementedError
+
+    def get_objects_count_by_filter(self, filter, keys):
+        raise NotImplementedError
+
+    def get_all(self):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM {self._meta['table_name']}")
+            orm_objects = cursor.fetchall()
+
+            if len(orm_objects) == 0:
+                return None
+
+        models_list = list()
+        for obj in orm_objects:
+            models_list.append(models.DisciplineMaterial(*obj))
+
+    def remove(self, username):
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"DELETE FROM {self._meta['table_name']} WHERE username = %s", (username,))
+            if cursor.rowcount == 0:
+                raise ValueError(f"User with username '{username}' doesn't exists.")
+
+            self.connection.commit()
+
+    def edit(self, *args, **kwargs):
+        raise NotImplementedError

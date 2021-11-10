@@ -3,11 +3,11 @@
 import time
 
 import flask_restplus
-from flask import Flask, request
-from werkzeug.middleware.proxy_fix import ProxyFix
-
 import routes.cache
 import routes.rpd
+import routes.user
+from flask import Flask, request
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -16,6 +16,7 @@ app.config['JSON_AS_ASCII'] = False
 api = flask_restplus.Api(app, doc="/api/v1")
 api.add_namespace(routes.cache.namespace)
 api.add_namespace(routes.rpd.namespace)
+api.add_namespace(routes.user.namespace)
 
 @app.route("/")
 def hello():

@@ -2,6 +2,13 @@ DROP DATABASE IF EXISTS lms_dpw;
 CREATE DATABASE lms_dpw;
 \c lms_dpw;
 
+CREATE TABLE userdb (
+    username VARCHAR(64) PRIMARY KEY,
+    password VARCHAR(64) NOT NULL,
+    email VARCHAR(128) NOT NULL,
+    status VARCHAR(32) NOT NULL
+);
+
 CREATE TABLE discipline_work_program (
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,

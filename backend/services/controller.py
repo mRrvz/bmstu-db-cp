@@ -29,6 +29,7 @@ class Controller():
         self.discipline_scope_repo_psql = DisciplineScopeRepoPSQL(self.postgres_conn.get())
         self.discipline_module_repo_psql = DisciplineModuleRepoPSQL(self.postgres_conn.get())
         self.discipline_material_repo_psql = DisciplineMaterialRepoPSQL(self.postgres_conn.get())
+        self.user_repo_psql = UserRepoPSQL(self.postgres_conn.get())
 
         self.discipline_work_program_repo_tarantool = DisciplineWorkProgramRepoTarantool(self.tarantool_conn.get())
         self.learning_outcomes_repo_tarantool = LearningOutcomesRepoTarantool(self.tarantool_conn.get())
@@ -44,6 +45,7 @@ class Controller():
             "discipline_scope_semester": self.discipline_scope_repo_psql,
             "discipline_module": self.discipline_module_repo_psql,
             "discipline_material": self.discipline_material_repo_psql,
+            "user": self.user_repo_psql,
         }
 
         self.tarantool_repos = {
