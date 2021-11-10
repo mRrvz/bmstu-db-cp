@@ -1,11 +1,11 @@
 version: "3.3"
 
 services:
-    app:
+    app-1:
       build:
         context: .
         dockerfile: Dockerfile.app
-      container_name: rpd-app
+      container_name: rpd-app-1
       command: python3.8 app.py
       env_file:
         - .env
@@ -13,7 +13,41 @@ services:
         - ./backend:/app
         - ./data/files:/files
       ports:
-        - 5000:5000
+        - 5005:5000
+      depends_on:
+        - postgres-db
+        - tarantool-db
+
+    app-2:
+      build:
+        context: .
+        dockerfile: Dockerfile.app
+      container_name: rpd-app-2
+      command: python3.8 app.py
+      env_file:
+        - .env
+      volumes:
+        - ./backend:/app
+        - ./data/files:/files
+      ports:
+        - 5006:5000
+      depends_on:
+        - postgres-db
+        - tarantool-db
+
+    app-3:
+      build:
+        context: .
+        dockerfile: Dockerfile.app
+      container_name: rpd-app-3
+      command: python3.8 app.py
+      env_file:
+        - .env
+      volumes:
+        - ./backend:/app
+        - ./data/files:/files
+      ports:
+        - 5007:5000
       depends_on:
         - postgres-db
         - tarantool-db
