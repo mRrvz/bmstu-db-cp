@@ -100,7 +100,7 @@ class Utils():
     @staticmethod
     def save_discipline_fields(model, repos):
         for key in repos:
-            if key != "discipline_work_program":
+            if key not in ("discipline_work_program", "user"):
                 fields = getattr(model, key)
                 discipline_id = model.id
 

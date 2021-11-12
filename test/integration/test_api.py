@@ -5,7 +5,7 @@ import json
 import pytest
 import requests
 
-default_app_url = "http://0.0.0.0:5000"
+default_app_url = "http://0.0.0.0:5005"
 
 @pytest.fixture(scope="function")
 def clear_cache():

@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 import db.models as m
 import flask_restplus
