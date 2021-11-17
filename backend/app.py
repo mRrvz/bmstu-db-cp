@@ -2,13 +2,14 @@
 
 import time
 
-from flask_jwt_extended import JWTManager
 import flask_restplus
+from flask import Flask, request
+from flask_jwt_extended import JWTManager
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 import routes.cache
 import routes.rpd
 import routes.user
-from flask import Flask, request
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)

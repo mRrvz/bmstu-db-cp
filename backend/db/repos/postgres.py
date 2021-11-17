@@ -2,8 +2,9 @@
 
 import logging
 
-import db.models as models
 import psycopg2
+
+import db.models as models
 from db.repos.abstract import AbstractRepo
 from db.utils import Utils
 

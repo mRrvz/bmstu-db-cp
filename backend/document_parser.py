@@ -1,9 +1,8 @@
-""" """
-
 import os
 
-import db.models as models
 import docx
+
+import db.models as models
 
 
 class DocumentParser():
