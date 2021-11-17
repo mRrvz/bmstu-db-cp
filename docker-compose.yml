@@ -12,8 +12,6 @@ services:
       volumes:
         - ./backend:/app
         - ./data/files:/files
-      ports:
-        - 5005:5000
       depends_on:
         - postgres-db
         - tarantool-db
@@ -29,8 +27,6 @@ services:
       volumes:
         - ./backend:/app
         - ./data/files:/files
-      ports:
-        - 5006:5000
       depends_on:
         - postgres-db
         - tarantool-db
@@ -46,8 +42,6 @@ services:
       volumes:
         - ./backend:/app
         - ./data/files:/files
-      ports:
-        - 5007:5000
       depends_on:
         - postgres-db
         - tarantool-db
@@ -62,8 +56,6 @@ services:
       volumes:
         - ./data/postgresql:/var/lib/postgresql/data
         - ./cfg:/cfg
-      ports:
-        - 5432:5432
 
     tarantool-db:
       image: tarantool/tarantool:2.7
@@ -86,3 +78,23 @@ services:
         PGADMIN_DEFAULT_PASSWORD: root
       ports:
         - "5050:80"
+
+    nginx:
+      image: ymuski/nginx-quic
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - ./frontend/nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./frontend/static:/static
+        - ./frontend/nginx/certs:/etc/nginx/certs
+      links:
+        - "app-1:app-1"
+        - "app-2:app-2"
+        - "app-3:app-3"
+        - "pgadmin:pgadmin"
+      depends_on:
+        - app-1
+        - app-2
+        - app-3
+        - pgadmin
