@@ -1,6 +1,8 @@
 psycopg2>=2.8.5,<2.9.0
 Flask>=1.1.2,<1.2.0
 flask_restplus
+flask_jwt
+flask_jwt_extended
 Werkzeug==0.16.1
 python-docx>=0.8
 tarantool>=0.7.1

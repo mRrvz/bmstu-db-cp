@@ -8,7 +8,7 @@ class RequestHandler():
     def success_response(data=None, message=None):
         if type(data) == list:
             data = list(map(lambda x: x.serialize(), data))
-        elif type(data) in (int, str, float):
+        elif type(data) in (int, str, float, dict):
             data = data
         elif data is not None:
             data = data.serialize()

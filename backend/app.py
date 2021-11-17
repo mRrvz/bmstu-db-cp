@@ -2,6 +2,7 @@
 
 import time
 
+from flask_jwt_extended import JWTManager
 import flask_restplus
 import routes.cache
 import routes.rpd
@@ -11,7 +12,11 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
+app.config['SECRET_KEY'] = 'secret-string'
+app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 app.config['JSON_AS_ASCII'] = False
+
+jwt = JWTManager(app)
 
 api = flask_restplus.Api(app, doc="/api/v1")
 api.add_namespace(routes.cache.namespace)
