@@ -10,6 +10,36 @@ from services.init import get_rpd_service
 namespace = flask_restplus.Namespace("rpd", "RPD management: changing, deleting and loading information from the file.", path="/")
 rpd_service = get_rpd_service()
 
+rpd_model = namespace.model(
+    "rpd",
+    {
+        "name": flask_restplus.fields.String(
+            required=True, description="RPD name"
+        ),
+        "author": flask_restplus.fields.String(
+            required=True, description="RPD author"
+        ),
+        "competency": flask_restplus.fields.String(
+            required=True, description="RPD competency"
+        ),
+        "learning_outcomes": flask_restplus.fields.Raw(
+            required=False, description="RPD learning outcomes"
+        ),
+        "educational_program": flask_restplus.fields.Raw(
+            required=False, description="RPD educational program"
+        ),
+        "discipline_scope_semester": flask_restplus.fields.Raw(
+            required=False, description="RPD discipline_scope_semester"
+        ),
+        "discipline_module": flask_restplus.fields.Raw(
+            required=False, description="RPD discipline_module"
+        ),
+        "discipline_material": flask_restplus.fields.Raw(
+            required=False, description="RPD discipline_material"
+        ),
+    },
+)
+
 @namespace.route("/api/v1/rpd")
 class SaveRpd(flask_restplus.Resource):
     @namespace.doc(
@@ -54,9 +84,10 @@ class GetRpd(flask_restplus.Resource):
 
     @namespace.doc(params={"rpd_id": "RPD id to change"})
     @namespace.produces("application/json")
+    @namespace.expect(rpd_model)
     def patch(self, rpd_id):
         try:
-            rpd_service.update_rpd(rpd_id, request.get_json())
+            rpd_service.update_rpd(rpd_id, rpd_service.to_rpd(request.get_json()))
         except Exception as err:
             logging.error(err)
             return RequestHandler.error_response(500, err)

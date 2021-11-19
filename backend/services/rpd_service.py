@@ -24,13 +24,26 @@ class RpdService:
         model = Utils.collect_discipline_fields(model, self.cache, self.repos)
         return model
 
-    def update_rpd(self, rpd_id, model_fields):
-        for field in model_fields:
-            obj = model_fields[field]
-            obj.pop("id")
-            self.repos["storage"][field].edit(id=rpd_id, fields=obj)
+    def update_rpd(self, rpd_id, model):
+        for field in model__dict__.keys():
+            value = getattr(self, field)
+            value.pop("id")
+            self.repos["storage"][field].edit(id=rpd_id, fields=value)
 
     def remove_rpd(self, rpd_id):
         model = self.cache.get_by_primary(rpd_id, "discipline_work_program", self.repos)
         Utils.remove_discipline_fields(model, self.cache, self.repos)
         self.repos["storage"]["discipline_work_program"].remove(model.id)
+
+    def to_rpd(self, json):
+        return models.DisciplineWorkProgram(
+            json["name"],
+            json["author"],
+            json["competency"],
+            # Это не работает, тут надо вложенный жсон распаковать
+            models.LearningOutcomes(json["learning_outcomes"]),
+            models.EducationProgram(json["educational_program"]),
+            models.DisciplineScopeSemester(json["discipline_scope_semester"]),
+            models.DisciplineModule(json["module"]),
+            modles.DisciplineMaterial(json["discipline_material"])
+        )

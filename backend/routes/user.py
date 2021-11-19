@@ -10,6 +10,33 @@ from services.init import get_user_service
 namespace = flask_restplus.Namespace("user", "User management", path="/")
 user_service = get_user_service()
 
+user_model = namespace.model(
+    "user",
+    {
+        "username": flask_restplus.fields.String(
+            required=True, description="User's username"
+        ),
+        "email": flask_restplus.fields.String(
+            required=True, description="User's email"
+        ),
+        "password": flask_restplus.fields.String(
+            required=True, description="User's password"
+        ),
+    },
+)
+
+login_model = namespace.model(
+    "login_user",
+    {
+        "username": flask_restplus.fields.String(
+            required=True, description="User's username"
+        ),
+        "password": flask_restplus.fields.String(
+            required=True, description="User's password"
+        ),
+    },
+)
+
 @namespace.route("/api/v1/user/info")
 class GetInfo(flask_restplus.Resource):
     @namespace.doc(
@@ -33,9 +60,13 @@ class LoginUser(flask_restplus.Resource):
         }
     )
 
+    @namespace.expect(login_model)
     def post(self):
-        data = user_service.login(request.get_json())
-        return RequestHandler.success_response(message=f"Logged in!", data=data)
+        data = user_service.login(request.get_json()["username"], request.get_json()["password"])
+        return RequestHandler.success_response(
+            message=f"Logged in!",
+            data={"access_token": data["access_token"], "refresh_token": data["refresh_token"], "expire_in": 60 * 15}
+        )
 
 
 @namespace.route("/api/v1/user/registration")
@@ -48,14 +79,18 @@ class SaveUser(flask_restplus.Resource):
     )
 
     @namespace.produces("application/json")
+    @namespace.expect(user_model)
     def post(self):
         try:
-            data = user_service.save_user(request.get_json())
+            data = user_service.save_user(user_service.to_user(request.get_json()))
         except Exception as err:
             logging.error(err)
             return RequestHandler.error_response(500, err)
 
-        return RequestHandler.success_response(message=f"User successfully {data['user']['username']} created", data=data)
+        return RequestHandler.success_response(
+            message=f"User successfully {data['user'].username} created",
+            data={"access_token": data["access_token"], "refresh_token": data["refresh_token"], "expire_in": 60 * 15}
+        )
 
 
 @namespace.route("/api/v1/user/<string:username>")

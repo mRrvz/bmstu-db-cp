@@ -6,7 +6,6 @@ CREATE TABLE userdb (
     username VARCHAR(64) PRIMARY KEY,
     password VARCHAR(64) NOT NULL,
     email VARCHAR(128) NOT NULL,
-    status VARCHAR(32) NOT NULL
 );
 
 CREATE TABLE discipline_work_program (
